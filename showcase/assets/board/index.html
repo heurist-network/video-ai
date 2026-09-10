@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Example app · Three-shot storyboard</title>
+<style>
+:root{--accent:#ccff00;--ink:#101111;--paper:#f3f3ee;--muted:#5a6058}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+main{max-width:1440px;margin:auto;padding:64px 48px}
+header{display:flex;justify-content:space-between;align-items:start;border-bottom:1px solid #c9ccc3;padding-bottom:28px;gap:24px}
+h1{font-size:clamp(32px,4vw,58px);letter-spacing:-.055em;line-height:1.02;margin:14px 0}
+p{line-height:1.55}header p{max-width:660px;color:var(--muted)}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.14em}
+.tag{font-size:12px;border:1px solid #babeb4;padding:10px 14px;white-space:nowrap}
+.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:12px}
+.sequence{display:flex;gap:24px;margin:28px 0 48px;flex-wrap:wrap;font-size:13px;color:#53594f}
+.sequence a{color:inherit;text-underline-offset:4px}
+section{margin-bottom:56px;scroll-margin-top:24px}
+.meta{display:flex;align-items:baseline;gap:18px;margin-bottom:16px}
+.num{font-size:14px;color:#737a6d}
+h2{font-size:24px;letter-spacing:-.03em;margin:0}
+.time{margin-left:auto;font-size:13px;white-space:nowrap}
+.frame{position:relative;width:100%;aspect-ratio:16/9;background:#090b0a;color:#f5f5f0;overflow:hidden;container-type:inline-size;isolation:isolate}
+.frame *{font-variant-numeric:tabular-nums}
+.notes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;margin-top:20px}
+.notes b{font-size:11px;text-transform:uppercase;letter-spacing:.12em}
+.notes p{font-size:14px;color:#545c50;margin:8px 0}
+.summary{border-top:1px solid #bfc5b6;padding-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.summary p{color:#515b49;font-size:14px}
+footer{font-size:12px;color:#69745f;margin-top:36px;line-height:1.6}
+button{border:1px solid #858d7e;background:transparent;padding:10px 14px;font:inherit;cursor:pointer;border-radius:4px}
+button[aria-pressed=true]{background:#20251b;color:#f3f3ee;border-color:#20251b}
+button:focus-visible,a:focus-visible{outline:2px solid #526c00;outline-offset:4px}
+
+/* Frame content. Everything inside .frame is sized in cqw so it scales with the frame. */
+.card{position:absolute;left:35%;top:30%;width:30cqw;height:26cqw;padding:2.5cqw;background:#171c15;border:1px solid #788e38;border-radius:1.1cqw}
+.identity{font-size:3.3cqw;font-weight:600;letter-spacing:-.035em}
+.label{font-size:1.18cqw;color:#aab2a6;margin-top:3cqw}
+.value{font-size:6.4cqw;line-height:1.08;font-weight:600;letter-spacing:-.06em;margin-top:.55cqw;color:var(--accent)}
+.metric{display:flex;justify-content:space-between;margin-top:1.5cqw;font-size:1.35cqw;color:#aab2a6}
+.metric strong{color:#ecf0e7;font-weight:400}
+.rows{position:absolute;left:5%;top:17%;width:90%;border-collapse:collapse;table-layout:fixed}
+.rows th{height:3.1cqw;font-size:1.02cqw;color:#abb4a4;font-weight:400;text-align:right;border-bottom:1px solid #48503d}
+.rows td{height:3.5cqw;font-size:1.45cqw;border-bottom:1px solid #2b332b;text-align:right;white-space:nowrap}
+.rows th:first-child,.rows td:first-child{text-align:left;width:46%;padding-left:1cqw}
+.rows td:nth-child(2){color:var(--accent)}
+.heading{position:absolute;left:5%;right:5%;top:5%;display:flex;justify-content:space-between;align-items:center}
+.heading .identity{font-size:2.6cqw}
+.heading small{font-size:1.12cqw;color:#aab2a6}.heading small strong{font-size:1.6cqw;color:#f0f2eb;margin-left:1cqw;font-weight:500}
+.composer{position:absolute;left:9%;right:9%;bottom:36%;display:flex;align-items:center;gap:1cqw;padding:1cqw 1.6cqw;background:#1d1f24;border:1px solid #ffffff14;border-radius:4cqw;font-size:1.6cqw;color:#bcbdc5}
+.composer .send{margin-left:auto;width:3cqw;height:3cqw;border-radius:50%;background:var(--accent)}
+.brand{position:absolute;left:9%;top:31%;font-size:2.5cqw;font-weight:500;color:#e4e5ea;letter-spacing:-.035em}
+
+/* Motion study: shot 02 widens the card surface into the table. */
+.study .card{transform-origin:0 0}
+.study .rows{opacity:0}
+.study .heading{opacity:0}
+
+/* Controls injected by the script for shots that declare a study. */
+.motion-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px;font-size:13px}
+.motion-controls [role=group]{display:flex;gap:6px;flex-wrap:wrap}
+.motion-controls output{color:#50594a;margin-left:auto;font-size:12px}
+.variant-description{font-size:13px;color:#535c4c;margin:0 0 14px;max-width:80ch}
+.player{position:fixed;inset:0;background:#000;z-index:10;display:flex;flex-direction:column}
+.player[hidden]{display:none}
+.player-stage{flex:1;display:flex;align-items:center;justify-content:center;padding:16px}
+.player-stage .frame{width:min(100%,calc((100vh - 90px) * 16 / 9))}
+.player-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;color:#a5aca0;font-size:13px}
+.player-bar button{color:#f3f3ee}
+
+@media(max-width:700px){main{padding:28px 16px}header{display:block}.tag{display:inline-block}.notes{grid-template-columns:1fr;gap:8px}.summary{grid-template-columns:1fr;gap:12px}.frame-review{overflow-x:auto}.frame{min-width:680px}}
+@media print{@page{size:landscape;margin:12mm}body{print-color-adjust:exact;-webkit-print-color-adjust:exact}main{padding:0;max-width:none}.frame{min-width:0;break-inside:avoid}section{break-inside:avoid;page-break-after:always}.actions,.motion-controls,button{display:none}}
+</style>
+</head>
+<body data-status="draft">
+<main>
+<header>
+  <div>
+    <div class="eyebrow">Example app / Direction draft 01</div>
+    <h1>A card. A table. A question.</h1>
+    <p>Three shots for a proposed 8-second film. Shot 2 offers a selectable motion study; the other shots are keyframes. Recommended pick: 2A, not locked. Directors review here and reply with feedback; nothing is animated until the board is locked.</p>
+  </div>
+  <div>
+    <div class="tag">STORYBOARD · AWAITING DECISIONS</div>
+    <div class="actions"><button type="button" data-play>Play animatic</button><button type="button" onclick="window.print()">Print / PDF</button></div>
+  </div>
+</header>
+<nav class="sequence" aria-label="Storyboard shots"><a href="#shot-01">01 The card</a><a href="#shot-02">02 Card becomes the table</a><a href="#shot-03">03 The resting composer</a></nav>
+
+<section id="shot-01" data-shot="01" data-duration="2.5">
+  <div class="meta"><span class="num">01</span><h2>The card</h2><span class="time">0.0–2.5s · proposed</span></div>
+  <div class="frame-review"><div class="frame" aria-label="One item card with three metrics">
+    <div class="card"><div class="identity">ITEM</div><div class="label">Headline metric</div><div class="value">2,369%</div><div class="metric"><span>Secondary</span><strong>$30.74M</strong></div><div class="metric"><span>Tertiary</span><strong>$67.7M</strong></div></div>
+  </div></div>
+  <div class="notes">
+    <div><b>Composition</b><p>One card centered on a dark field. Real values from the product, not placeholders, once this template is adapted.</p></div>
+    <div><b>Motion</b><p>The card settles over 0.45s, then holds. Every number stays fixed.</p></div>
+    <div><b>Source / boundary</b><p>Composed from the product's card component. Say here where the data came from and when.</p></div>
+  </div>
+</section>
+
+<section id="shot-02" data-shot="02" data-duration="3" data-selected="A">
+  <div class="meta"><span class="num">02</span><h2>Card becomes the table</h2><span class="time">2.5–5.5s · proposed</span></div>
+  <div class="frame-review"><div class="frame study" aria-label="The card surface widens into a six-row table">
+    <div class="card"><div class="identity">ITEM</div><div class="label">Headline metric</div><div class="value">2,369%</div><div class="metric"><span>Secondary</span><strong>$30.74M</strong></div><div class="metric"><span>Tertiary</span><strong>$67.7M</strong></div></div>
+    <div class="heading"><div class="identity">ITEM</div><small>Total<strong>$30.74M</strong></small></div>
+    <table class="rows" aria-label="Six rows from the product"><thead><tr><th scope="col">Row</th><th scope="col">Metric</th><th scope="col">Secondary</th><th scope="col">Tertiary</th></tr></thead><tbody>
+      <tr><td>ITEM / A 0.05%</td><td>71%</td><td>$8.33M</td><td>$29.01M</td></tr>
+      <tr><td>ITEM / B 0.05%</td><td>9.8%</td><td>$1.38M</td><td>$2.65M</td></tr>
+      <tr><td>ITEM / C 0.05%</td><td>93%</td><td>$1.23M</td><td>$5.74M</td></tr>
+      <tr><td>ITEM / A 0.3%</td><td>31%</td><td>$1.02M</td><td>$178.19K</td></tr>
+      <tr><td>ITEM / C 0.3%</td><td>104%</td><td>$339.31K</td><td>$289.98K</td></tr>
+      <tr><td>ITEM / A 0.3%</td><td>2,369%</td><td>$121.56K</td><td>$2.38M</td></tr>
+    </tbody></table>
+  </div></div>
+  <div class="notes">
+    <div><b>Composition</b><p>Both variants widen only the card surface; the identity moves without stretching. 2A reveals the rows together; 2B staggers them after the surface settles.</p></div>
+    <div><b>Motion</b><p>Choose A or B, then seek Start, Transition or Settled. Replay runs the selected study once. Numbers never interpolate.</p></div>
+    <div><b>Source / boundary</b><p>Rows keep source order and values. Row totals need not sum to the headline figure.</p></div>
+  </div>
+</section>
+
+<section id="shot-03" data-shot="03" data-duration="2.5">
+  <div class="meta"><span class="num">03</span><h2>The resting composer</h2><span class="time">5.5–8.0s · proposed</span></div>
+  <div class="frame-review"><div class="frame" aria-label="Brand label above the app's resting input">
+    <div class="brand">Example app</div>
+    <div class="composer"><span>Ask a question</span><span class="send"></span></div>
+  </div></div>
+  <div class="notes">
+    <div><b>Composition</b><p>Brand label, then the app's compact resting input with its real controls.</p></div>
+    <div><b>Motion</b><p>The table recedes and the pill settles. Hold 1.5s, then fade the frame over 0.6s.</p></div>
+    <div><b>Source / boundary</b><p>Based on the observed empty composer. No typed query, no answer.</p></div>
+  </div>
+</section>
+
+<div class="summary">
+  <div><div class="eyebrow">Three shots, one story</div><p>The card opens the film, widens into its table, and the film rests on the product's own input.</p></div>
+  <div><div class="eyebrow">Production boundaries</div><p>Native HTML/React layout intended for production only after the board locks. No fabricated numbers, logos or answers. State the snapshot date of any data shown.</p></div>
+</div>
+<footer>Storyboard review only, not a final video. Reduced-motion replay goes directly to Settled; phase buttons still allow static inspection. On narrow screens, scroll each frame horizontally. Print uses landscape pages.</footer>
+</main>
+
+<div class="player" hidden><div class="player-stage"></div><div class="player-bar"><span class="player-label"></span><button type="button" data-stop>Stop (Esc)</button></div></div>
+
+<script>
+(() => {
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const box = (x, y, w, h) => ({left: `${x}cqw`, top: `${y}cqw`, width: `${w}cqw`, height: `${h}cqw`});
+
+  // One entry per shot that offers variants. build() attaches paused animations for the
+  // chosen variant; the shared code below handles controls, phases and replay.
+  const studies = {
+    '02': {
+      duration: 1600,
+      variants: {A: '2A · Recommended: widen the surface, then reveal rows together.', B: '2B · Alternative: reveal rows in a short stagger after the surface settles.'},
+      build(frame, variant, animate) {
+        const card = frame.querySelector('.card'), rows = [...frame.querySelectorAll('.rows tbody tr')];
+        animate(card, [{...box(35, 30, 30, 26), offset: 0}, {...box(5, 2.8, 90, 49), offset: .48}, {...box(5, 2.8, 90, 49), opacity: 0, offset: 1}]);
+        animate(card.querySelector('.identity'), [{transform: 'none', offset: 0}, {transform: 'translate(-2.5cqw, -2.5cqw)', offset: .48}, {transform: 'translate(-2.5cqw, -2.5cqw)', opacity: 0, offset: .65}, {transform: 'translate(-2.5cqw, -2.5cqw)', opacity: 0, offset: 1}]);
+        [...card.children].slice(1).forEach((el) => animate(el, [{opacity: 1, offset: 0}, {opacity: 0, offset: .24}, {opacity: 0, offset: 1}]));
+        animate(frame.querySelector('.heading'), [{opacity: 0, offset: 0}, {opacity: 0, offset: .48}, {opacity: 1, offset: .65}, {opacity: 1, offset: 1}]);
+        const table = frame.querySelector('.rows');
+        animate(table, [{opacity: 0, offset: 0}, {opacity: 0, offset: .48}, {opacity: 1, offset: .5}, {opacity: 1, offset: 1}]);
+        rows.forEach((row, i) => {
+          const begin = variant === 'A' ? .5 : .5 + i * .04;
+          animate(row, [{opacity: 0, offset: 0}, {opacity: 0, offset: begin}, {opacity: 1, offset: Math.min(1, begin + .18)}, {opacity: 1, offset: 1}]);
+        });
+      }
+    }
+  };
+
+  const players = {};
+
+  document.querySelectorAll('section[data-shot]').forEach((section) => {
+    const id = section.dataset.shot, study = studies[id];
+    if (!study) return;
+    const frame = section.querySelector('.frame');
+    const review = section.querySelector('.frame-review');
+    const controls = document.createElement('div');
+    controls.className = 'motion-controls';
+    const ids = Object.keys(study.variants);
+    controls.innerHTML = `<div role="group" aria-label="Shot ${id} variant">${ids.map((v) => `<button type="button" data-variant="${v}">${Number(id)}${v}</button>`).join('')}</div>` +
+      `<div role="group" aria-label="Shot ${id} phase"><button type="button" data-phase="start">Start</button><button type="button" data-phase="transition">Transition</button><button type="button" data-phase="settled">Settled</button></div>` +
+      `<button type="button" data-replay>Replay once</button><output aria-live="polite"></output>`;
+    const description = document.createElement('p');
+    description.className = 'variant-description';
+    section.insertBefore(controls, review);
+    section.insertBefore(description, review);
+
+    const status = controls.querySelector('output');
+    let variant = section.dataset.selected || ids[0];
+    let animations = [], generation = 0;
+    const animate = (el, keyframes) => { const a = el.animate(keyframes, {duration: study.duration, fill: 'both', easing: 'cubic-bezier(.65,0,.35,1)'}); a.pause(); animations.push(a); };
+    function rebuild() {
+      generation++;
+      animations.forEach((a) => a.cancel()); animations = [];
+      frame.dataset.variant = variant;
+      description.textContent = study.variants[variant];
+      controls.querySelectorAll('[data-variant]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.variant === variant)));
+      study.build(frame, variant, animate);
+    }
+    function phase(name) {
+      generation++;
+      const time = {start: 0, transition: study.duration / 2, settled: study.duration}[name];
+      animations.forEach((a) => { a.pause(); a.currentTime = time; });
+      controls.querySelectorAll('[data-phase]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.phase === name)));
+      status.textContent = `${Number(id)}${variant} · ${name}${reducedMotion.matches ? ' · reduced motion' : ''}`;
+    }
+    function replay() {
+      if (reducedMotion.matches) { phase('settled'); return Promise.resolve(); }
+      phase('start');
+      const run = generation;
+      controls.querySelectorAll('[data-phase]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+      status.textContent = `${Number(id)}${variant} · playing once`;
+      animations.forEach((a) => a.play());
+      return Promise.all(animations.map((a) => a.finished)).then(() => { if (generation === run) phase('settled'); }).catch(() => {});
+    }
+    controls.addEventListener('click', (event) => {
+      const button = event.target.closest('button');
+      if (!button) return;
+      if (button.dataset.variant) { variant = button.dataset.variant; rebuild(); phase('settled'); }
+      else if (button.dataset.phase) phase(button.dataset.phase);
+      else if (button.hasAttribute('data-replay')) replay();
+    });
+    reducedMotion.addEventListener('change', () => phase('settled'));
+    rebuild(); phase('settled');
+    players[id] = {replay, settle: () => phase('settled')};
+  });
+
+  // Animatic: each frame is moved into the overlay for its duration, then put back.
+  const player = document.querySelector('.player'), stage = player.querySelector('.player-stage'), label = player.querySelector('.player-label');
+  let playing = false;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  async function play() {
+    playing = true; player.hidden = false;
+    for (const [i, section] of [...document.querySelectorAll('section[data-shot]')].entries()) {
+      if (!playing) break;
+      const frame = section.querySelector('.frame'), home = frame.parentElement;
+      label.textContent = `${String(i + 1).padStart(2, '0')} ${section.querySelector('h2').textContent} · ${section.dataset.duration}s`;
+      stage.replaceChildren(frame);
+      const study = players[section.dataset.shot];
+      if (study) study.replay();
+      await sleep(section.dataset.duration * 1000);
+      home.append(frame);
+      if (study) study.settle();
+    }
+    playing = false; player.hidden = true;
+  }
+  document.querySelector('[data-play]').addEventListener('click', () => { if (!playing) play(); });
+  player.querySelector('[data-stop]').addEventListener('click', () => { playing = false; });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') playing = false; });
+})();
+</script>
+</body>
+</html>

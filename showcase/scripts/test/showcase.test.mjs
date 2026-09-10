@@ -54,18 +54,14 @@ test('real ffmpeg: silent intended video passes; required audio fails; retiming 
   assert.equal(result.status, 0, result.stderr + result.stdout);
   console.log(`Retained fixture evidence: ${root}`);
 });
-test('board generator renders shots, variants and rejects broken boards', async () => {
-  const {renderBoard} = await import('../board.mjs');
-  const dir = path.join(scripts, '../assets/board');
-  const board = JSON.parse(fs.readFileSync(path.join(dir, 'board.json'), 'utf8'));
-  const html = renderBoard(board, dir);
-  assert.equal((html.match(/<section class="shot"/g) || []).length, 2);
-  assert.match(html, /data-pick="B"/);
-  assert.match(html, /srcdoc="/);
-  assert.match(html, /img class="still"/);
-  assert.match(html, /DRAFT · AWAITING DECISIONS/);
-  const broken = structuredClone(board); broken.shots[0].selected = 'Z';
-  assert.throws(() => renderBoard(broken, dir), /selected variant Z/);
-  broken.shots[0].selected = 'A'; broken.shots[1].variants[0].frame.src = 'missing.png';
-  assert.throws(() => renderBoard(broken, dir), /not found/);
+test('board check reads the template shot list and rejects broken pages', async () => {
+  const {checkPage} = await import('../board.mjs');
+  const html = fs.readFileSync(path.join(scripts, '../assets/board/index.html'), 'utf8');
+  const report = checkPage(html);
+  assert.equal(report.status, 'draft');
+  assert.deepEqual(report.shots.map((s) => [s.id, s.duration, s.selected]), [['01', 2.5, undefined], ['02', 3, 'A'], ['03', 2.5, undefined]]);
+  assert.equal(report.total, 8);
+  assert.throws(() => checkPage(html.replace('data-shot="03"', 'data-shot="01"')), /unique/);
+  assert.throws(() => checkPage(html.replace('data-duration="3"', 'data-duration="0"')), /positive/);
+  assert.throws(() => checkPage('<body></body>'), /No <section/);
 });

@@ -43,35 +43,34 @@ board and are settled when the board locks.
 
 ### Produce the storyboard
 
-The storyboard is a directory with a `board.json`, a `frames/` folder and a generated
-`index.html` page that the team opens in a browser; [storyboard page](references/storyboard.md)
-describes the format and the build command, and `assets/board/` is a working example.
-The board holds the brief, one entry per shot with its viewer takeaway, final on-screen
-copy, real-or-composed label with input source, duration, notes, and one or more
-variants. Each variant is a frame: a still, an HTML frame built from real product
-components and data, or a clip. Offer variants where a real choice exists, mark the
-recommended one, and say in the notes what differs. Durations should land near the
-target length. [Motion patterns](references/motion-patterns.md) are a reference for how
-shots can move, not a menu to pick from.
+The storyboard is one hand-authored HTML page, `storyboard/index.html`, that the team
+opens in a browser; [storyboard page](references/storyboard.md) describes its structure
+and `assets/board/index.html` is the template and example. Start from the template and
+replace everything. One section per shot with its timing, a frame built from the
+product's real components and data, and notes on composition, motion and source. The
+header states the viewer takeaway, film length and the recommended picks. Offer variants
+where a real choice exists, as motion studies on the same frame, and say in the notes
+what differs. Durations should land near the target length. [Motion patterns](references/motion-patterns.md)
+are a reference for how shots can move, not a menu to pick from.
 
-Rebuild the page after every edit. Its animatic plays the selected variants in order
-for their durations; that is how directors judge pacing before anything is animated.
+Run the check command after every edit. The page's animatic plays every shot in order
+for its duration; that is how directors judge pacing before anything is animated.
 
 ### Review and lock
 
-Directors open the page, pick variants, write notes per shot and send the copied
-decisions back. Apply them to the board, resolve the notes, rebuild, repeat. Keep prior
-variants in the board so directors can compare.
+Directors open the page and reply with feedback in chat or in an unstructured
+feedback markdown. Apply it to the page, reshare, repeat. Keep alternatives on the
+page until they are decided so directors can compare.
 
-The board locks as a whole, once, when every shot is agreed: set its status to locked
-and record who locked it and when. After the lock, any change to copy, shot order,
-duration, source label, frame or style reopens section 1 for that shot and the board
-must be re-locked.
+The board locks as a whole, once, when every shot is agreed: set the page status to
+locked and record who locked it and when. After the lock, any change to copy, shot
+order, duration, source label, frame or style reopens section 1 for that shot and the
+board must be re-locked.
 
 ### Section 1 output
 
-- `storyboard/`: `board.json`, `frames/` and the generated `index.html`, every revision
-  kept in version control.
+- `storyboard/index.html` and the images it references, every revision kept in
+  version control.
 
 ## 2. Animate and deliver
 

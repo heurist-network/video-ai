@@ -1,88 +1,82 @@
 # Storyboard page
 
-The storyboard is a directory the agent maintains and a page the team opens:
-
-```
-storyboard/
-  board.json        source of truth: brief, shots, variants, notes, lock
-  frames/           one file per variant: still image, HTML frame or clip
-  index.html        generated; never edit by hand
-```
-
-Build or rebuild the page after every edit:
+The storyboard is one hand-authored HTML file, `storyboard/index.html`, that the team
+opens in a browser. The agent writes it directly, one style block and one script, and
+edits it in place as directors decide. `assets/board/index.html` is the template and a
+complete example; copy it and replace everything.
 
 ```sh
-node "$SKILL/scripts/board.mjs" --board "$PROJECT/storyboard/board.json"
+node "$SKILL/scripts/board.mjs" new "$PROJECT/storyboard"
+node "$SKILL/scripts/board.mjs" check "$PROJECT/storyboard/index.html"
 ```
 
-The page is static. Host the directory anywhere or open `index.html` from disk.
-`assets/board/` is a complete example with all three frame types.
+`check` validates the contract below and prints the shot list with durations as JSON.
+Run it before sharing the page and when section 2 needs the shot list. Host the
+directory anywhere; images it references sit beside it.
 
-## board.json
+## Page structure
 
-```json
-{
-  "title": "Stock tokens",
-  "subtitle": "Heurist Finance / draft 05",
-  "summary": "One paragraph on what the film does.",
-  "status": "draft",
-  "frame": {"width": 1920, "height": 1080},
-  "brief": {"Viewer takeaway": "...", "Aspect ratio and target duration": "..."},
-  "shots": [
-    {
-      "id": "03",
-      "title": "Card becomes the table",
-      "duration": 2.5,
-      "takeaway": "One pool row is the unit of comparison.",
-      "copy": "Exact on-screen text, if any.",
-      "source": "real",
-      "input": "app build 2026-09-09, pool table component",
-      "selected": "A",
-      "notes": {"Composition": "...", "Motion": "...", "Source / boundary": "..."},
-      "variants": [
-        {"id": "A", "label": "Recommended: rows reveal together", "frame": {"type": "html", "src": "frames/03a.html", "animated": true}},
-        {"id": "B", "label": "Alternative: short stagger", "frame": {"type": "html", "src": "frames/03b.html", "animated": true}}
-      ]
-    }
-  ],
-  "closing": {"Story": "...", "Production boundaries": "..."},
-  "lock": {"by": "name", "at": "2026-09-12", "note": "optional"}
+- Header: eyebrow with product and draft number, a title, one paragraph stating the
+  film length, which shots offer variants, the recommended picks and that nothing is
+  locked. A status tag, and the animatic and print buttons.
+- A nav listing every shot.
+- One `<section>` per shot: number, title, timing range, the frame, then a three-column
+  notes grid with **Composition**, **Motion** and **Source / boundary**.
+- A summary with the story in one paragraph and the production boundaries.
+- A footer with evidence paths and review caveats.
+
+## Contract the script and `check` rely on
+
+```html
+<body data-status="draft">                              <!-- or locked -->
+<section id="shot-03" data-shot="03" data-duration="2.5" data-selected="A">
+  <div class="meta"><span class="num">03</span><h2>Title</h2><span class="time">4.0–6.5s · proposed</span></div>
+  <div class="frame-review"><div class="frame"> ... </div></div>
+  <div class="notes"> ... </div>
+</section>
+```
+
+`data-duration` is seconds; the timing range text is derived by hand from the running
+total. `data-selected` names the recommended variant for shots that have a study.
+Everything else on the page is free.
+
+## Frames
+
+A frame is a `div.frame` with `aspect-ratio: 16/9` and `container-type: inline-size`.
+Everything inside is sized in `cqw`, so the frame scales to any width with no script,
+in the page, in the animatic overlay and in print. Build frames from the product's
+real components and data: actual tables with actual rows, actual labels, actual logos.
+Use `tabular-nums`. Keep glyph geometry fixed; move surfaces, crop with a uniform
+transform, never reflow or stretch text.
+
+A shot that is a keyframe is just markup. Shots that share a layout reuse the same DOM
+with a shot class that restyles it, for example `.shot-close .hero` enlarging one card.
+
+## Motion studies and variants
+
+A shot with alternatives registers one entry in the script's `studies` map:
+
+```js
+'03': {
+  duration: 1600,
+  variants: {A: '3A · Recommended: ...', B: '3B · Alternative: ...'},
+  build(frame, variant, animate) { animate(el, keyframes); ... }
 }
 ```
 
-`brief`, `notes` and `closing` are free-form key/value blocks rendered in order; use
-the headings the directors expect. Shot timing is cumulative from `duration`. A shot
-with one variant shows no picker. `status` is `draft` or `locked`; `lock` is written
-when the directors lock the board.
+`build` attaches paused Web Animations for the chosen variant; the shared code adds
+the variant buttons, Start / Transition / Settled phase buttons, Replay once, a status
+line and the reduced-motion fallback. Variants differ in
+keyframes, not in DOM copies. Coordinates are in `cqw`; numbers never interpolate.
+The frame must read as the settled shot when loaded.
 
-## Frame types
+## Feedback and lock
 
-- `still`: any image. Use for shots where nothing moves or a reference screenshot.
-- `clip`: an MP4 or WebM, for example a shot proof from section 2 or a capture take.
-  The page shows a replay button and plays it in the animatic.
-- `html`: an HTML fragment rendered inside a sandboxed iframe at `frame.width` by
-  `frame.height`, scaled to fit. Build it from real product components and data,
-  the way a style frame is built. With `"animated": true` the page adds phase buttons
-  and a replay button; the fragment must then expose:
+Directors only read the page. They reply in chat or in an unstructured feedback
+markdown; the agent applies the feedback to the page, updates `data-selected` and the
+header's recommended picks, and reshares. When nothing is contested, set
+`data-status="locked"`, change the tag text and record who locked it and when in the
+header.
 
-```js
-window.frame = {
-  replay() { /* run the motion once from the start */ },
-  seek(phase) { /* jump to 'start', 'transition' or 'settled' without playing */ }
-};
-```
-
-Phase names default to start, transition and settled; override with `frame.phases`.
-Use the Web Animations API with paused animations so `seek` sets `currentTime` and
-`replay` plays; see `assets/board/frames/opening-a.html`. Keep glyphs fixed and move
-surfaces; the frame should read as the settled shot when loaded.
-
-## Decisions
-
-Variant pickers and the director notes on the page store in the viewer's browser
-only. When the directors are done they press **Copy decisions** and paste the JSON to
-the agent, which applies each pick to `selected`, resolves the notes, and rebuilds.
-Repeat until nothing is contested, then set `status` to `locked` and fill `lock`.
-
-**Play animatic** runs the selected variant of every shot for its duration, in order,
-full screen. Escape stops it.
+**Play animatic** moves each frame into a full-screen overlay for its `data-duration`,
+replaying its study, then puts it back. Escape stops it.
