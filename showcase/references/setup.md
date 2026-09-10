@@ -60,7 +60,7 @@ keep Studio on `127.0.0.1` and explicitly forward its printed port through SSH, 
 a small MP4 and transfer it for local playback. No automatic tunnels or persistent
 services are created. Stop only your own foreground Studio process when finished.
 
-No cloud API, storage bucket, scheduler integration, product login, Typefully key or
-service account is needed for the illustrative native starter. Supply project-specific
-credentials only through separately authorized capture/publishing workflows. Never copy
+No cloud API, storage bucket, scheduler integration, product login or service account
+is needed for the illustrative native starter. Supply project-specific credentials only
+through a separately authorized capture workflow. Never copy
 private product snapshots or account configuration into the shared skill.

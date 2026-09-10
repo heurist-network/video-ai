@@ -93,9 +93,6 @@ rendered media. A missing asset license grants no additional rights. Dependencie
 their own terms. Use owned or separately licensed replacements; do not download the
 entire media archive as a supposedly royalty-free asset pack.
 
-Use `assets/storyboard.md` as the per-project pattern and asset record. Each reused asset
-needs a source/commit/file, rights, adaptation, shot reference, and inspection evidence.
-Each retained recipe needs its trigger, motion parameters, coordinate system, constraints,
-and a reproducible preview. Keep source-observed, locally adapted, and render-verified
-states distinct. Save project-specific footage and variants in the work folder; retain
-only independent reusable recipes in this skill.
+Save project-specific footage and variants in the work folder; retain only independent
+reusable recipes in this skill, each with its trigger, motion parameters, coordinate
+system, constraints and a reproducible preview.

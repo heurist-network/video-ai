@@ -51,14 +51,5 @@
       "No dated claims: a figure true on the recording day expires overnight.",
       "Do not quote on-screen UI labels. They change between runs and the copy silently stops matching."
     ]
-  },
-
-  "publish": {
-    "_comment": "Where the draft is staged. Never a token: the publishing tool holds its own credentials.",
-    "provider": "typefully",
-    "socialSet": 0,
-    "handle": "@example",
-    "manualSend": true,
-    "_manualSend": "Human publication is the default. Staging a draft does not authorize scheduling or publishing."
   }
 }
