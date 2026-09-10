@@ -1,0 +1,49 @@
+{
+  "title": "Example feature film",
+  "subtitle": "Illustrative starter / draft 01",
+  "summary": "Two shots that show the three frame types and a variant decision. Replace everything here with the real product.",
+  "status": "draft",
+  "frame": {"width": 1920, "height": 1080},
+  "brief": {
+    "Viewer takeaway": "One sentence the viewer should believe afterward.",
+    "Aspect ratio and target duration": "16:9, about 6 seconds",
+    "Style frames": "frames/opening-a.html",
+    "Settled decisions": "No sound. Audience is X followers and current users."
+  },
+  "shots": [
+    {
+      "id": "01",
+      "title": "Opening rise",
+      "duration": 3,
+      "takeaway": "The product name lands.",
+      "copy": "One line of copy.",
+      "source": "composed",
+      "input": "marketing notes, 2026-09-01",
+      "selected": "A",
+      "notes": {
+        "Composition": "Centered phrase on a dark field.",
+        "Motion": "A reveals the phrase in one move. B staggers the words.",
+        "Source / boundary": "Illustrative type only; no product claim."
+      },
+      "variants": [
+        {"id": "A", "label": "Recommended: one move", "frame": {"type": "html", "src": "frames/opening-a.html", "animated": true}},
+        {"id": "B", "label": "Alternative: staggered words", "frame": {"type": "html", "src": "frames/opening-b.html", "animated": true}}
+      ]
+    },
+    {
+      "id": "02",
+      "title": "Settled close",
+      "duration": 3,
+      "takeaway": "The frame rests on the product mark.",
+      "source": "composed",
+      "notes": {"Composition": "A still is enough when nothing moves."},
+      "variants": [
+        {"id": "A", "frame": {"type": "still", "src": "frames/close.svg"}}
+      ]
+    }
+  ],
+  "closing": {
+    "Story": "Open on the phrase, rest on the mark.",
+    "Production boundaries": "Frames are illustrative. Clips rendered in section 2 can replace any frame with type clip."
+  }
+}

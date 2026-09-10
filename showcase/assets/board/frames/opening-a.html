@@ -1,0 +1,20 @@
+<style>
+  body { display: grid; place-items: center; background: #0b0d12; color: #f2f3f7; font: 700 96px/1.1 system-ui, sans-serif; }
+  .phrase span { display: inline-block; opacity: 0; }
+</style>
+<div class="phrase"><span>One</span> <span>move</span> <span>reveals</span> <span>it.</span></div>
+<script>
+  const words = [...document.querySelectorAll('.phrase span')];
+  const keyframes = [{opacity: 0, transform: 'translateY(24px)', filter: 'blur(12px)'}, {opacity: 1, transform: 'none', filter: 'none'}];
+  let animations = [];
+  function build() {
+    animations.forEach((a) => a.cancel());
+    animations = words.map((w) => { const a = w.animate(keyframes, {duration: 580, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both'}); a.pause(); return a; });
+  }
+  const total = 580;
+  window.frame = {
+    replay() { build(); animations.forEach((a) => a.play()); },
+    seek(phase) { build(); const t = {start: 0, transition: total / 2, settled: total}[phase] ?? total; animations.forEach((a) => { a.currentTime = t; }); }
+  };
+  window.frame.seek('settled');
+</script>

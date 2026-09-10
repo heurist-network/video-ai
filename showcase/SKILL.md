@@ -9,7 +9,7 @@ An agent-native motion graphics pipeline for high-quality product demo videos an
 motion graphics. The storyboard is the center of gravity: everything is debated and
 edited there until the human directors agree, and only then are scenes animated.
 
-## 1. Brief and ideation
+## 1. Ideation and storyboard creation
 
 Understand the project (usually a frontend product) from its source code and docs
 before asking anything: scope, design language, the features to showcase and how they
@@ -43,33 +43,35 @@ board and are settled when the board locks.
 
 ### Produce the storyboard
 
-Copy [the storyboard record](assets/storyboard.md) into the project's `storyboard/`
-directory. The board holds the brief, the style frames and one row per shot with its
-viewer takeaway, final on-screen copy, real-or-composed label with input source,
-entrance, hold and exit durations, and a still that shows the shot's settled state.
-Draw stills in the style frames' look; real shots use actual product components or
-screenshots, composed shots are drawn to the simplified mock. Durations should land
-near the target length. [Motion patterns](references/motion-patterns.md) are a
-reference for how shots can move, not a menu to pick from.
+The storyboard is a directory with a `board.json`, a `frames/` folder and a generated
+`index.html` page that the team opens in a browser; [storyboard page](references/storyboard.md)
+describes the format and the build command, and `assets/board/` is a working example.
+The board holds the brief, one entry per shot with its viewer takeaway, final on-screen
+copy, real-or-composed label with input source, duration, notes, and one or more
+variants. Each variant is a frame: a still, an HTML frame built from real product
+components and data, or a clip. Offer variants where a real choice exists, mark the
+recommended one, and say in the notes what differs. Durations should land near the
+target length. [Motion patterns](references/motion-patterns.md) are a reference for how
+shots can move, not a menu to pick from.
 
-Play the board as a timed animatic: the stills shown for their planned durations,
-rendered as a low-resolution MP4 in `export/`. Contact sheets and tables cannot show
-rhythm; the animatic is how directors judge pacing before anything is animated.
+Rebuild the page after every edit. Its animatic plays the selected variants in order
+for their durations; that is how directors judge pacing before anything is animated.
 
 ### Review and lock
 
-Directors debate the board shot by shot. Edit the board and re-render the animatic for
-every change. Keep prior versions of a shot by variant ID so directors can compare.
+Directors open the page, pick variants, write notes per shot and send the copied
+decisions back. Apply them to the board, resolve the notes, rebuild, repeat. Keep prior
+variants in the board so directors can compare.
 
-The board locks as a whole, once, when every shot is agreed. Record in the storyboard
-who locked it, when, and which animatic they watched. After the lock, any change to
-copy, shot order, duration, source label, still or style frame reopens section 1 for
-that shot and the board must be re-locked.
+The board locks as a whole, once, when every shot is agreed: set its status to locked
+and record who locked it and when. After the lock, any change to copy, shot order,
+duration, source label, frame or style reopens section 1 for that shot and the board
+must be re-locked.
 
 ### Section 1 output
 
-- `storyboard/`: the record, style frames and shot stills, every revision retained.
-- `export/`: animatic MP4s, one per board revision, uniquely named.
+- `storyboard/`: `board.json`, `frames/` and the generated `index.html`, every revision
+  kept in version control.
 
 ## 2. Animate and deliver
 
@@ -98,7 +100,7 @@ Keep recorded product behavior visibly distinct from composed presentation.
 ### Review and approval
 
 1. Preview each shot's entrance, settled state and exit, including reverse seeks, and
-   check it against its storyboard still and copy. Preserve prior previews and choices.
+   check it against its storyboard frame and copy. Preserve prior previews and choices.
 2. Render a low-resolution full-film proof before the delivery render. Watch it at
    normal speed and compare its pacing to the locked animatic.
 3. Get the director's approval of that exact proof and record who approved it, when,

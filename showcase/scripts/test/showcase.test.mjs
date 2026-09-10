@@ -54,3 +54,18 @@ test('real ffmpeg: silent intended video passes; required audio fails; retiming 
   assert.equal(result.status, 0, result.stderr + result.stdout);
   console.log(`Retained fixture evidence: ${root}`);
 });
+test('board generator renders shots, variants and rejects broken boards', async () => {
+  const {renderBoard} = await import('../board.mjs');
+  const dir = path.join(scripts, '../assets/board');
+  const board = JSON.parse(fs.readFileSync(path.join(dir, 'board.json'), 'utf8'));
+  const html = renderBoard(board, dir);
+  assert.equal((html.match(/<section class="shot"/g) || []).length, 2);
+  assert.match(html, /data-pick="B"/);
+  assert.match(html, /srcdoc="/);
+  assert.match(html, /img class="still"/);
+  assert.match(html, /DRAFT · AWAITING DECISIONS/);
+  const broken = structuredClone(board); broken.shots[0].selected = 'Z';
+  assert.throws(() => renderBoard(broken, dir), /selected variant Z/);
+  broken.shots[0].selected = 'A'; broken.shots[1].variants[0].frame.src = 'missing.png';
+  assert.throws(() => renderBoard(broken, dir), /not found/);
+});
