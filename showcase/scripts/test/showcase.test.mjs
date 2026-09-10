@@ -1,0 +1,65 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {createRequire} from 'node:module';
+import {patchPosts} from '../draft-patch.mjs';
+const require = createRequire(import.meta.url);
+const {outsideHolds, hasFaststart} = require('../verification.js');
+const {mp4Path} = require('../output.js');
+const scripts = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const temp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'showcase-test-'));
+const atom = (name, body = Buffer.alloc(0)) => {const head = Buffer.alloc(8); head.writeUInt32BE(8 + body.length); head.write(name, 4); return Buffer.concat([head, body]);};
+test('atom parser does not confuse arbitrary payload with moov', () => {
+  const root = temp(); fs.mkdirSync(path.join(root, 'export'));
+  const file = path.join(root, 'export/atoms.mp4');
+  fs.writeFileSync(file, Buffer.concat([atom('free', Buffer.from('moov')), atom('mdat'), atom('moov')]));
+  assert.equal(hasFaststart(file), false);
+  fs.writeFileSync(file, Buffer.concat([atom('free', Buffer.alloc(70000)), atom('moov'), atom('mdat')]));
+  assert.equal(hasFaststart(file), true);
+});
+test('holds subtract only approved windows, including partial overlap', () => {
+  assert.deepEqual(outsideHolds([[0, 5]], [{from: 1, to: 3, reason: 'reading'}], 5), [[0, 1], [3, 5]]);
+  assert.throws(() => outsideHolds([[0, 5]], [{from: 0, to: 5}], 5), /reason/);
+});
+test('MP4 output contract and refusal to overwrite', () => {
+  const root = temp();
+  const file = mp4Path(root, null, 'proof.mp4'); fs.writeFileSync(file, 'fixture');
+  assert.throws(() => mp4Path(root, file), /overwrite/);
+  assert.throws(() => mp4Path(root, path.join(root, 'build/bad.mp4')), /All MP4/);
+});
+test('draft patch preserves latest wording and rejects stale or invalid patches', () => {
+  const draft = {updated_at: 'latest', platforms: {x: {posts: [{text: 'Human edit', media_ids: ['old']}, {text: 'Keep', media_ids: []}]}}};
+  const patch = {expectedUpdatedAt: 'latest', posts: [{index: 0, media: ['new']}]};
+  assert.deepEqual(patchPosts(draft, patch, '.'), [{text: 'Human edit', media_ids: ['new']}, {text: 'Keep', media_ids: []}]);
+  assert.equal(draft.platforms.x.posts[0].media_ids[0], 'old');
+  assert.throws(() => patchPosts(draft, {...patch, expectedUpdatedAt: 'old'}, '.'), /changed/);
+  assert.throws(() => patchPosts(draft, {...patch, posts: [{index: 7}]}, '.'), /index/);
+});
+test('real ffmpeg: silent intended video passes; required audio fails; retiming requires explicit consent', {timeout: 120000}, () => {
+  const root = temp();
+  fs.mkdirSync(path.join(root, 'export')); fs.mkdirSync(path.join(root, 'take/raw'), {recursive: true});
+  const run = (bin, args) => spawnSync(bin, args, {encoding: 'utf8', timeout: 60000});
+  let result = run('ffmpeg', ['-v', 'error', '-f', 'lavfi', '-i', 'color=c=blue:s=320x180:r=25:d=1', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', path.join(root, 'export/silent.mp4')]);
+  assert.equal(result.status, 0, result.stderr);
+  fs.writeFileSync(path.join(root, 'holds.json'), JSON.stringify([{from: 0, to: 1, reason: 'fixture reading hold'}]));
+  const args = [path.join(scripts, 'verify.js'), '--project', root, '--video', path.join(root, 'export/silent.mp4'), '--holds', path.join(root, 'holds.json')];
+  result = run(process.execPath, [...args, '--audio', 'none']);
+  assert.equal(result.status, 0, result.stderr + result.stdout);
+  result = run(process.execPath, [...args, '--audio', 'required']);
+  assert.equal(result.status, 1, result.stderr + result.stdout);
+  assert.match(result.stdout, /required audio track missing/);
+  result = run('ffmpeg', ['-v', 'error', '-f', 'lavfi', '-i', 'testsrc2=s=320x180:r=25:d=2', '-c:v', 'libvpx', path.join(root, 'take/raw/take.webm')]);
+  assert.equal(result.status, 0, result.stderr);
+  fs.writeFileSync(path.join(root, 'take/marks.json'), '[]');
+  fs.writeFileSync(path.join(root, 'plan.json'), JSON.stringify({speed: 1, segments: [{from: 0, to: 2, rate: 4}]}));
+  const cut = [path.join(scripts, 'cut.js'), '--project', root, '--assets', path.join(root, 'take'), '--plan', path.join(root, 'plan.json'), '--fps', '30'];
+  result = run(process.execPath, cut);
+  assert.notEqual(result.status, 0); assert.match(result.stderr, /allow-frame-drop/);
+  result = run(process.execPath, [...cut, '--allow-frame-drop']);
+  assert.equal(result.status, 0, result.stderr + result.stdout);
+  console.log(`Retained fixture evidence: ${root}`);
+});

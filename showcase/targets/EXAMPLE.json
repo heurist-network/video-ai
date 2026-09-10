@@ -1,0 +1,64 @@
+{
+  "_comment": [
+    "Target schema. A target is instance data, so the real ones live outside this repo,",
+    "at ~/.agents/work/<project>/showcase/target.json. Scripts take a bare name and",
+    "resolve it there, or an explicit path.",
+    "",
+    "Everything here is about what the camera sees and what the copy may claim. Nothing",
+    "in a target is a credential."
+  ],
+
+  "name": "example-app",
+
+  "app": {
+    "_comment": "url is where the demo starts. Record against whichever build actually answers: a signed-out production instance that refuses the action makes a useless film. Hide the dev-only chrome instead, below.",
+    "url": "http://localhost:3000/",
+    "_hostPattern": "Regex matched against location.hostname. Zoom, dev-chrome hiding and cursor scaling apply only to hosts that match, so a third-party page in the same take is filmed untouched.",
+    "hostPattern": "localhost|example\\.com",
+    "_viewport": "Playwright records at CSS-pixel size and ignores deviceScaleFactor, so record a native 1080p viewport and use zoom for legibility.",
+    "viewport": { "width": 1920, "height": 1080 },
+    "_zoom": "CSS zoom on <html>. Never a transform on <html>: that stops fixed-position children painting at all. 1.4 fills a 1080p frame with large type while leaving the app about 1370 CSS px to lay out in.",
+    "zoom": 1.4
+  },
+
+  "devChrome": {
+    "_comment": "Anything the dev build shows that production does not. Hide it at record time, not in post: anything overlapping a live control cannot be patched without smearing the control.",
+    "hostPattern": "localhost",
+    "rules": [
+      "a[href*=\"/internal\"] { display: none !important }",
+      "[class*=\"devtools\" i] { display: none !important }",
+      "nextjs-portal { display: none !important }"
+    ]
+  },
+
+  "sources": {
+    "_comment": "Third-party material that may appear on camera. Filming inside a competitor's product hands them the frame.",
+    "allowed": [
+      { "url": "https://example.gov/series", "why": "public-domain primary source, not a rival product" }
+    ],
+    "banned": [
+      { "pattern": "competitor.com", "why": "direct competitor" }
+    ]
+  },
+
+  "copy": {
+    "_comment": "Constraints on the post that ships with the video. The lane rules, not the words.",
+    "bannedTerms": [
+      { "term": "internal-jargon", "why": "means something else to this audience" }
+    ],
+    "rules": [
+      "No em dashes.",
+      "No dated claims: a figure true on the recording day expires overnight.",
+      "Do not quote on-screen UI labels. They change between runs and the copy silently stops matching."
+    ]
+  },
+
+  "publish": {
+    "_comment": "Where the draft is staged. Never a token: the publishing tool holds its own credentials.",
+    "provider": "typefully",
+    "socialSet": 0,
+    "handle": "@example",
+    "manualSend": true,
+    "_manualSend": "Human publication is the default. Staging a draft does not authorize scheduling or publishing."
+  }
+}

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Showcase motion recipes</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #141416; color: #eee; font: 16px system-ui, sans-serif; }
+  main { max-width: 1200px; margin: 32px auto; padding: 0 24px; }
+  h1 { font-size: 20px; font-weight: 500; }
+  p { color: #aaa; line-height: 1.5; }
+  #viewport { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; position: relative; }
+  #frame { position: absolute; width: 1920px; height: 1080px; overflow: hidden;
+    transform-origin: 0 0; background: #09090b; }
+  #title { position: absolute; left: 130px; top: 220px; z-index: 2; font-size: 96px;
+    line-height: 1.1; letter-spacing: -4px; font-weight: 600; }
+  #title span { display: block; transform-origin: left center; }
+  #anchor { position: absolute; left: 72%; top: 50%; width: 0; height: 0; }
+  #rig { width: 0; height: 0; }
+  #subject { position: absolute; left: -230px; top: -380px; width: 460px; height: 760px;
+    border: 2px solid #414146; border-radius: 48px; background: #19191c; padding: 40px;
+    box-shadow: 0 36px 96px #0009; }
+  #subject p { font-size: 26px; margin-top: 40px; }
+  .shape { height: 150px; margin-top: 32px; border: 1px solid #45454b;
+    border-radius: 20px; background: #242428; }
+  #focus { height: 90px; margin-top: 52px; border: 2px solid #bbb;
+    border-radius: 20px; display: grid; place-items: center; font-size: 24px; }
+  #label { position: absolute; left: 130px; bottom: 75px; color: #888; font-size: 24px; }
+  .controls { display: flex; gap: 18px; align-items: center; margin-top: 20px; }
+  input { flex: 1; } button { padding: 10px 18px; cursor: pointer; }
+  output { min-width: 70px; font-variant-numeric: tabular-nums; }
+</style>
+<main>
+  <h1>Text entrance and whole-subject camera</h1>
+  <p>Motion study with an abstract frame. Replace the subject with your own footage.
+    Scrub to inspect the entrance, close-up, settled hold, and return.</p>
+  <div id="viewport"><div id="frame">
+    <div id="title"><span>One subject.</span><span>One camera.</span></div>
+    <div id="anchor"><div id="rig"><div id="subject">
+      <p>Illustrative frame</p><div class="shape"></div><div class="shape"></div>
+      <div id="focus">Focus region</div>
+    </div></div></div>
+    <div id="label">Composition study / no product behavior</div>
+  </div></div>
+  <div class="controls"><button id="play">Replay</button>
+    <label for="time">Time</label><input id="time" type="range" min="0" max="4" step="0.01" value="0">
+    <output id="readout">0.00 s</output></div>
+</main>
+<script src="motion-kit.js"></script>
+<script>
+  const rig = document.querySelector('#rig');
+  const words = document.querySelectorAll('#title span');
+  const slider = document.querySelector('#time');
+  let animation;
+  const wide = { x: 0, y: 0, scale: 0.96 };
+  const close = { x: -90, y: -340, scale: 1.55 };
+  window.seek = (time) => {
+    const t = Math.max(0, Math.min(4, time));
+    ShowcaseMotion.textPop(words, t);
+    // One active interval writes the rig, including all before/after states.
+    if (t < 2.8) ShowcaseMotion.camera(rig, t, { start: 1.25, from: wide, to: close });
+    else ShowcaseMotion.camera(rig, t, { start: 2.8, duration: 0.46, from: close, to: wide });
+    slider.value = t;
+    document.querySelector('#readout').value = t.toFixed(2) + ' s';
+  };
+  slider.addEventListener('input', () => { cancelAnimationFrame(animation); seek(+slider.value); });
+  document.querySelector('#play').addEventListener('click', () => {
+    cancelAnimationFrame(animation);
+    const origin = performance.now();
+    function tick(now) { const t = (now - origin) / 1000; seek(t);
+      if (t < 4) animation = requestAnimationFrame(tick); }
+    animation = requestAnimationFrame(tick);
+  });
+  new ResizeObserver(() => {
+    document.querySelector('#frame').style.transform =
+      `scale(${document.querySelector('#viewport').clientWidth / 1920})`;
+  }).observe(document.querySelector('#viewport'));
+  seek(0);
+</script>
+</html>
