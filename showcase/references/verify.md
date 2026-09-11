@@ -4,8 +4,10 @@
 node "$SKILL/scripts/verify.js" --project "$PROJECT" --video "$PROJECT/export/delivery-r1.mp4" --audio none --holds "$PROJECT/holds.json" --frames 0.3,2,5
 ```
 
-Audio policies: `optional` (default), `none`, `required`. Films are silent by policy,
-so use `none`; use `required` only for a checked destination requirement. Holds are
+Audio policies: `optional` (default), `none`, `required`. Audio-less video is valid when
+intended; the bundled renderer defaults to silent output, but sound intent comes from
+the brief. Use `required` for an agreed audio deliverable or checked destination
+requirement, and verify the content of that audio separately. Holds are
 explicit `[{"from":1,"to":2,"reason":"Read the comparison"}]` in delivery seconds.
 There is no implicit end-hold exemption; `--tail` is an explicit legacy option.
 

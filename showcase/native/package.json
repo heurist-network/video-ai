@@ -5,6 +5,7 @@
   "engines": { "node": ">=22" },
   "scripts": {
     "studio": "node preview.mjs",
+    "revision": "node render.mjs revision",
     "proof": "node render.mjs proof",
     "final": "node render.mjs final",
     "test": "node --test test/*.test.mjs"

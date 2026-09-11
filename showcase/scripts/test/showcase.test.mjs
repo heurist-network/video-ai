@@ -6,11 +6,23 @@ import os from 'node:os';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {createRequire} from 'node:module';
+import {patchPosts} from '../draft-patch.mjs';
 const require = createRequire(import.meta.url);
 const {outsideHolds, hasFaststart} = require('../verification.js');
 const {mp4Path} = require('../output.js');
 const scripts = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const temp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'showcase-test-'));
+test('board check reads the template shot list and rejects broken pages', async () => {
+  const {checkPage} = await import('../board.mjs');
+  const html = fs.readFileSync(path.join(scripts, '../assets/board/index.html'), 'utf8');
+  const report = checkPage(html);
+  assert.equal(report.status, 'draft');
+  assert.deepEqual(report.shots.map((s) => [s.id, s.duration, s.selected]), [['01', 2.5, undefined], ['02', 3, 'A'], ['03', 2.5, undefined]]);
+  assert.equal(report.total, 8);
+  assert.throws(() => checkPage(html.replace('data-shot="03"', 'data-shot="01"')), /unique/);
+  assert.throws(() => checkPage(html.replace('data-duration="3"', 'data-duration="0"')), /positive/);
+  assert.throws(() => checkPage('<body></body>'), /No <section/);
+});
 const atom = (name, body = Buffer.alloc(0)) => {const head = Buffer.alloc(8); head.writeUInt32BE(8 + body.length); head.write(name, 4); return Buffer.concat([head, body]);};
 test('atom parser does not confuse arbitrary payload with moov', () => {
   const root = temp(); fs.mkdirSync(path.join(root, 'export'));
@@ -29,6 +41,14 @@ test('MP4 output contract and refusal to overwrite', () => {
   const file = mp4Path(root, null, 'proof.mp4'); fs.writeFileSync(file, 'fixture');
   assert.throws(() => mp4Path(root, file), /overwrite/);
   assert.throws(() => mp4Path(root, path.join(root, 'build/bad.mp4')), /All MP4/);
+});
+test('draft patch preserves latest wording and rejects stale or invalid patches', () => {
+  const draft = {updated_at: 'latest', platforms: {x: {posts: [{text: 'Human edit', media_ids: ['old']}, {text: 'Keep', media_ids: []}]}}};
+  const patch = {expectedUpdatedAt: 'latest', posts: [{index: 0, media: ['new']}]};
+  assert.deepEqual(patchPosts(draft, patch, '.'), [{text: 'Human edit', media_ids: ['new']}, {text: 'Keep', media_ids: []}]);
+  assert.equal(draft.platforms.x.posts[0].media_ids[0], 'old');
+  assert.throws(() => patchPosts(draft, {...patch, expectedUpdatedAt: 'old'}, '.'), /changed/);
+  assert.throws(() => patchPosts(draft, {...patch, posts: [{index: 7}]}, '.'), /index/);
 });
 test('real ffmpeg: silent intended video passes; required audio fails; retiming requires explicit consent', {timeout: 120000}, () => {
   const root = temp();
@@ -53,15 +73,4 @@ test('real ffmpeg: silent intended video passes; required audio fails; retiming 
   result = run(process.execPath, [...cut, '--allow-frame-drop']);
   assert.equal(result.status, 0, result.stderr + result.stdout);
   console.log(`Retained fixture evidence: ${root}`);
-});
-test('board check reads the template shot list and rejects broken pages', async () => {
-  const {checkPage} = await import('../board.mjs');
-  const html = fs.readFileSync(path.join(scripts, '../assets/board/index.html'), 'utf8');
-  const report = checkPage(html);
-  assert.equal(report.status, 'draft');
-  assert.deepEqual(report.shots.map((s) => [s.id, s.duration, s.selected]), [['01', 2.5, undefined], ['02', 3, 'A'], ['03', 2.5, undefined]]);
-  assert.equal(report.total, 8);
-  assert.throws(() => checkPage(html.replace('data-shot="03"', 'data-shot="01"')), /unique/);
-  assert.throws(() => checkPage(html.replace('data-duration="3"', 'data-duration="0"')), /positive/);
-  assert.throws(() => checkPage('<body></body>'), /No <section/);
 });

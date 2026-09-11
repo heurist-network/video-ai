@@ -43,7 +43,10 @@ the cadence estimate includes global and segment speed, but VFR capture still pr
 a preservation guarantee. `--allow-frame-drop` explicitly accepts CFR resampling for
 compressed waits. Do not claim every captured frame survived because fps is 60.
 Original capture audio is discarded. `--audio silent` opts into a silent AAC track
-only when the destination needs it. Both encodes use faststart.
+only when the destination needs it; it is not sound design. Both encodes use faststart.
 
-For capture-only projects, record the approved take and cut plan in the storyboard
-before the delivery encode.
+Capture follows the same locked HTML storyboard and full-film proof review as composed
+shots. For capture-only projects, record the approved take, cut-plan hash, revision and
+exact proof SHA-256 in the supporting proof/approval record before the delivery encode.
+Record the director's approval, who approved and when. Changes invalidate that approval.
+The cut CLI does not enforce the native approval receipt; the operator owns this gate.

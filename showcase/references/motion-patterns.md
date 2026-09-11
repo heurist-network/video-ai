@@ -29,7 +29,9 @@ frame state. Other rows are implementation references, not installed effects.
 Copy `assets/motion-kit.js` and its `LICENSE.minara.txt` together into the composition.
 The offline `assets/motion-preview.html` demonstrates both helpers and exposes `seek(t)`
 in seconds. It is a recipe sandbox, not an approval storyboard or final-render source.
-Use `native/` for a storyboard and MP4 driven by the same React scenes and timing.
+Start with the [HTML storyboard](storyboard.md); after its lock, use `native/` for
+implementation preview and MP4 rendering. Reuse scene/timing logic across the HTML
+animatic and native implementation and check exact-time parity during the port.
 The sandbox's neutral frame is explicitly illustrative and uses system fonts.
 Replace its words, colors, and subject with the target's chosen direction and footage.
 
@@ -93,6 +95,10 @@ rendered media. A missing asset license grants no additional rights. Dependencie
 their own terms. Use owned or separately licensed replacements; do not download the
 entire media archive as a supposedly royalty-free asset pack.
 
-Save project-specific footage and variants in the work folder; retain only independent
-reusable recipes in this skill, each with its trigger, motion parameters, coordinate
-system, constraints and a reproducible preview.
+Use [the supporting record](../assets/storyboard.md) for per-project proof, pattern
+and asset evidence, not creative decisions owned by the HTML storyboard. Each reused asset
+needs a source/commit/file, rights, adaptation, shot reference, and inspection evidence.
+Each retained recipe needs its trigger, motion parameters, coordinate system, constraints,
+and a reproducible preview. Keep source-observed, locally adapted, and render-verified
+states distinct. Save project-specific footage and variants in the work folder; retain
+only independent reusable recipes in this skill.
