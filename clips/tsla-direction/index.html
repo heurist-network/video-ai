@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=1080,height=1920"><title>Suspended direction</title>
+<script src="assets/gsap.min.js"></script>
+<style>
+@font-face{font-family:Inter;src:url('assets/inter-regular.woff2') format('woff2');font-weight:400}
+@font-face{font-family:Inter;src:url('assets/inter-semibold.woff2') format('woff2');font-weight:600}
+:root{--bg:#050505;--fg:#f5f4f1;--accent:#c5b4ef}
+*{box-sizing:border-box;margin:0;padding:0}html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg)}
+#stage{position:relative;width:1080px;height:1920px;background:var(--bg);color:var(--fg);font-family:Inter,sans-serif}
+.scene-content{display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;height:100%;padding:160px 100px;gap:64px}
+.line{display:flex;justify-content:center;align-items:baseline;gap:25px;width:880px;flex:0 0 auto}
+.top{font-size:100px;line-height:1.2;letter-spacing:-4px;font-weight:400}
+.choice{font-size:148px;line-height:1.2;letter-spacing:-7px;font-weight:600;gap:30px}
+#or{font-size:66px;font-weight:400;letter-spacing:-2px}
+.bottom{font-size:112px;line-height:1.2;letter-spacing:-5px;margin-top:4px}
+.word{display:block;flex:0 0 auto;opacity:0;will-change:transform}
+</style></head><body>
+<div id="stage" data-composition-id="main" data-start="0" data-duration="8" data-width="1080" data-height="1920" data-fps="30">
+<div id="question" class="clip scene-content" data-start="0" data-duration="8" data-track-index="0" aria-label="Will TSLA go UP or DOWN today?">
+<div class="line top"><span class="word" id="will">Will</span><span class="word" id="tsla">TSLA</span><span class="word" id="go">go</span></div>
+<div class="line choice"><span class="word" id="up">UP</span><span class="word" id="or">or</span><span class="word" id="down">DOWN</span></div>
+<div class="line bottom"><span class="word" id="today">today?</span></div>
+</div></div>
+<script>
+// Adapted from official registry per-word-rise: word units, authored landing cues,
+// overshoot-free C1 settle tail, and true final hold. Opposed travel is the concept.
+const LAND_SPLIT=.78, LAND_RESIDUAL=.07, LAND_SEAM_SLOPE=((1-LAND_RESIDUAL)/LAND_SPLIT)*.5;
+function landEase(p){if(p<=0)return 0;if(p>=1)return 1;if(p<LAND_SPLIT){const x=p/LAND_SPLIT,inv=1-x;return(1-LAND_RESIDUAL)*(.5*(1-inv*inv*inv)+.5*x)}const u=(p-LAND_SPLIT)/(1-LAND_SPLIT),b=LAND_SEAM_SLOPE*(1-LAND_SPLIT),c=3*LAND_RESIDUAL-2*b,d=b-2*LAND_RESIDUAL;return 1-LAND_RESIDUAL+b*u+c*u*u+d*u*u*u}
+const tl=gsap.timeline({paused:true});
+const cues=[['will',.12,.43,-55,50,-8],['tsla',.43,.46,65,40,7],['go',.78,.32,-30,35,-5],['up',1.40,.68,-20,50,-3],['or',2.18,.30,0,30,0],['down',2.55,.68,20,-50,3],['today',3.43,.52,42,55,-6]];
+cues.forEach(([id,start,duration,x,y,rotation])=>{tl.fromTo('#'+id,{opacity:0,x,y,rotation},{opacity:1,x:0,y:0,rotation:0,duration,ease:landEase},start)});
+// Identical lavender treatment for both alternatives; neither wins the question.
+tl.fromTo('#up',{color:'#c5b4ef'},{color:'#f5f4f1',duration:.5,ease:'sine.inOut'},2.03);
+tl.fromTo('#down',{color:'#c5b4ef'},{color:'#f5f4f1',duration:.5,ease:'sine.inOut'},3.18);
+// A simultaneous opposing pull, followed by one balanced resolution.
+tl.to('#up',{y:-20,duration:.28,ease:'sine.inOut'},4.12);
+tl.to('#down',{y:20,duration:.28,ease:'sine.inOut'},4.12);
+tl.to(['#up','#down'],{y:0,duration:.38,ease:'power2.out'},4.40);
+tl.addLabel('complete-question',4.78);tl.addLabel('final-hold',7.99);tl.seek(0);window.__timelines=window.__timelines||{};window.__timelines['main']=tl;
+</script></body></html>

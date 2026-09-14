@@ -4,6 +4,7 @@ An illustrative two-shot motion study, not live app behavior. No product data, l
 accounts, credentials, remote assets or network data clients are bundled. Begin here
 only after directors lock the project's HTML storyboard; this is its implementation
 preview and guarded renderer, not a competing storyboard-first review surface.
+For a port, read [HTML/native parity](PARITY.md).
 Read [shot direction](../references/shot-direction.md) before designing or porting shots.
 
 Copy this starter's contents into the project showcase workspace without overwriting
@@ -13,7 +14,7 @@ root so every MP4 shares its `export/` directory. Install dependencies
 explicitly there with `npm ci --ignore-scripts --no-audit --no-fund`. Direct dependencies
 are pinned and `package-lock.json` records transitive resolution. A clean local install
 and full-film proof were tested with lifecycle scripts disabled. Review dependency
-updates and retain the lock in the product workspace. See [setup](../references/setup.md)
+updates and retain the lock in the product workspace. See [setup](SETUP.md)
 before installing.
 
 Set `SHOWCASE_BROWSER` to an installed browser executable. The runner defaults to
@@ -27,7 +28,7 @@ guarded CLI instead. Use its timeline to play, scrub,
 seek backward, replay, and inspect every `Shots/shot-<shot>-<variant>` composition.
 All previews and final renders use `Shot` and `Film` from `src/Scenes.jsx`, with timing
 from `src/timing.mjs`. Port the locked HTML animatic using shared scene/timing modules,
-following [native port and parity](../references/storyboard.md#native-port-and-parity).
+following [native port and parity](PARITY.md).
 Compare identical times at entrances, boundaries and holds; do not recreate an
 approximate second design. The native and HTML examples are different illustrations,
 not a pre-integrated film. Freeze the locked HTML/assets in `public/board-lock/` and

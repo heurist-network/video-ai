@@ -45,8 +45,6 @@ compressed waits. Do not claim every captured frame survived because fps is 60.
 Original capture audio is discarded. `--audio silent` opts into a silent AAC track
 only when the destination needs it; it is not sound design. Both encodes use faststart.
 
-Capture follows the same locked HTML storyboard and full-film proof review as composed
-shots. For capture-only projects, record the approved take, cut-plan hash, revision and
-exact proof SHA-256 in the supporting proof/approval record before the delivery encode.
-Record the director's approval, who approved and when. Changes invalidate that approval.
-The cut CLI does not enforce the native approval receipt; the operator owns this gate.
+Capture follows the repository's [stage and review policy](../../docs/workflow.md).
+The optional native proof receipt is specific to the Remotion path; it is not a second
+universal approval gate for captured or HyperFrames videos.

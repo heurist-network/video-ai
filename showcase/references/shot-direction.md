@@ -1,5 +1,24 @@
 # Shot direction
 
+## Choose promotional graphics or a product demo
+
+Use the user’s request to distinguish these treatments; social distribution alone does not turn
+a product demo into a promotional graphic.
+
+For a promotional graphic, compose around one message and one dominant visual. Do not
+reconstruct a realistic interface by default. Remove minor labels, duplicate names,
+timestamps, explanatory copy, decorative text, charts and controls unless they directly
+carry that message. Make the key number or phrase large enough to read at social-feed
+size. Keep secondary facts visibly subordinate. For example, a stock-price promo can
+use a ticker, a headline price and a smaller signed dollar change without company names,
+percentages, market headings or a price chart. Keep provenance in the surrounding board
+notes; retain any qualification essential to the truth of the claim.
+
+For an actual product demo, preserve the real layout, labels, states and interaction
+sequence needed to understand the feature. Simplify by framing and selective emphasis,
+not by inventing product behavior. Interface fidelity serves the demonstration; it is
+not a requirement for promotional typography or composed marketing graphics.
+
 ## Show the action, not a slide about it
 
 Designing storyboard shots is not creating a slideshow. Do not add editorial titles,
@@ -18,8 +37,9 @@ or carry a transition. If it does none of these, try removing it before embellis
 
 Specify what survives each shot boundary: the same panel, a selected row, a cursor
 click, a chart surface or a continuing camera move. A replay button and several isolated
-fade-ins are not a continuous animatic. Show the outgoing state, connecting motion and
-incoming settled state together before building the full sequence.
+fade-ins are not a continuous animatic. Describe the outgoing state, connecting motion
+and incoming settled state in the board. Demonstrate them together only when needed
+to judge a creative choice; a fully animated sequence is not required for board lock.
 
 A useful treatment is a browser frame that establishes context, then recedes while its
 content expands into the film. Keep chrome and content on separate layers, preserve the
@@ -77,17 +97,15 @@ actual asset and its placement, not just whether its file loaded.
 
 ## Make iteration cheaper than the build
 
-Settle an opening and closing style frame plus one representative transition before
-an extensive animation rewrite. Preserve readable holds while adding thinking beats,
+Settle an opening and closing style frame before an extensive animation rewrite.
+Add a representative transition study only when stills and motion descriptions are
+insufficient to judge the treatment. Preserve readable holds while adding thinking beats,
 row reveals or cell waves; propose a duration change rather than silently compressing
 reading time. Brief workers with the approved reference, explicit freedom and fixed
 constraints. The lead still owns reviewing visual choices; a technically valid worker
 result is not a taste approval.
 
-Use one deterministic timeline and shared scene logic for playback, seeking and native
-rendering. If an HTML animatic precedes a native implementation, compare identical times
-at entrances, boundaries and holds. Do not create a second approximate design during the
-port. Test reverse seeking, immediate stop/restart, image/font readiness and reduced
-motion. Automated correctness and sampled images do not establish normal-speed pacing
-or human aesthetic approval. Reuse checks for unchanged inputs instead of repeating a
-full investigation on each small edit.
+For HyperFrames production, use the [technical guide map](../../docs/hyperframes.md).
+For a Remotion port, use the [shared timeline and parity contract](../native/PARITY.md).
+Those runtime checks do not require animation in a static storyboard. Reuse checks for unchanged
+inputs instead of repeating a full investigation on each small edit.

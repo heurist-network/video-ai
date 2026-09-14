@@ -1,0 +1,29 @@
+[
+  {
+    "local_alias": "library/sources/hyperframes-promo.mp4",
+    "source_sha256": "3619744a80e64da3cf639b8332fe3c933bfe8bca7bf06760bd134f6d2eb2b5f2",
+    "source_url": "https://media.githubusercontent.com/media/heygen-com/hyperframes/main/packages/producer/tests/heygen-promo-preview-assets/output/output.mp4",
+    "repository_url": "https://github.com/heygen-com/hyperframes/tree/main/packages/producer/tests/heygen-promo-preview-assets",
+    "retrieved_date": "2026-09-13",
+    "kind": "public rendered test fixture; not a commercial performance benchmark",
+    "source_code_supplied_to_model": false
+  },
+  {
+    "local_alias": "library/sources/chat.mp4",
+    "source_sha256": "d002c0d9d9851ec6abce1c662ed7a0a7b78b993ec778650a9aca4a437edb4080",
+    "source_url": "https://media.githubusercontent.com/media/heygen-com/hyperframes/main/packages/producer/tests/chat/output/output.mp4",
+    "repository_url": "https://github.com/heygen-com/hyperframes/tree/main/packages/producer/tests/chat",
+    "retrieved_date": "2026-09-13",
+    "kind": "public rendered test fixture; not a commercial performance benchmark",
+    "source_code_supplied_to_model": false
+  },
+  {
+    "local_alias": "library/sources/gsap-letters-render-compat.mp4",
+    "source_sha256": "a1fb024874f6d301775019feca5210e5e514b40153264488a5311f02f475b413",
+    "source_url": "https://media.githubusercontent.com/media/heygen-com/hyperframes/main/packages/producer/tests/gsap-letters-render-compat/output/output.mp4",
+    "repository_url": "https://github.com/heygen-com/hyperframes/tree/main/packages/producer/tests/gsap-letters-render-compat",
+    "retrieved_date": "2026-09-13",
+    "kind": "public rendered test fixture; not a commercial performance benchmark",
+    "source_code_supplied_to_model": false
+  }
+]

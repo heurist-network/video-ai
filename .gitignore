@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+node_modules/
+reference-lab/library/
+library.tar.gz
+media.tar.gz
+
+.DS_Store
+__pycache__/
+*.pyc
