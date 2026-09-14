@@ -19,7 +19,7 @@ gh auth status >/dev/null
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-gh release download media-v1 --pattern 'library.tar.gz' --dir "$TMP"
+gh release download media-v1 --pattern '*.tar.gz' --dir "$TMP"
 mkdir -p reference-lab
-tar -xzf "$TMP/library.tar.gz" -C reference-lab
+tar -xzf "$TMP"/*.tar.gz -C reference-lab
 echo "OK → reference-lab/library"
