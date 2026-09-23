@@ -12,7 +12,7 @@ const option=(name,fallback)=>{const i=rest.indexOf(name);return i<0?fallback:re
 const ROOT=path.resolve(option('--output-root',TOOL_ROOT));
 const probePath=option('--probe-path',process.env.FFPROBE_PATH||probe.path);
 const model=option('--model','gemini-3.8-flash');
-const fps=Number(option('--fps','24'));
+const fps=Number(option('--fps','10'));
 const question=option('--question','');
 const resolution=option('--resolution','high').toUpperCase();
 const api='https://generativelanguage.googleapis.com/v1beta';

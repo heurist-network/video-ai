@@ -1,3 +1,5 @@
+> Repository distribution note: bundled MP3 files are omitted. Offline sound effects require separately supplied, appropriately licensed files; otherwise use the retrieval provider.
+
 # Sound effects (SFX)
 
 Named sound effects, produced by the shared audio engine (`scripts/audio.mjs` → `scripts/lib/sfx.mjs`). **Provider-gated** by the engine's one switch — whether a HeyGen credential is present, decided once (not per cue):

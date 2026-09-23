@@ -22,3 +22,9 @@ The optional motion corpus (`reference-lab/library`) is stored separately as a R
 gh auth login
 ./scripts/fetch-media.sh
 ```
+
+## License
+
+Original code and documentation are available under the [MIT License](LICENSE).
+Third-party code, skills, fonts, and media retain their respective licenses; see
+[third-party notices](THIRD_PARTY_NOTICES.md). The MIT license does not relicense the reference-media archive.

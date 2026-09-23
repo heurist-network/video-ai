@@ -6,8 +6,6 @@ How was it made: We used Gemini 3.8 Flash inspects video visuals, extracts reusa
 
 ## Run
 
-Requires Node 10+, Python 3, and `GEMINI_API_KEY` in `../.env` (already configured).
-
 ```sh
 cd ~/video-ai/reference-lab
 npm ci
