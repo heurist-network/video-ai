@@ -1,0 +1,4 @@
+interface:
+  display_name: "Video Reference Study"
+  short_description: "Learn visual structure and choreography from video"
+  default_prompt: "Use $video-reference-study to analyze this reference video and create an HTML study with detailed motion breakdowns and reusable creative directions."

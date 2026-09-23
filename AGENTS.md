@@ -2,6 +2,8 @@ Create videos with Hyperframes. 3 steps: **find ideas â†’ create a storyboard â†
 
 ## Where to go
 
+- **Study an external reference video:** [video-reference-study](.agents/skills/video-reference-study/SKILL.md). Produce a whole-video HTML analysis with evidence-backed scene choreography and transferable patterns.
+
 - **Ideas:** [reference-lab/AGENTS.md](reference-lab/AGENTS.md). Search 100+ motion graphic clips, images and annotated texts about style and contents to find ideas. Do not read the HTML corpus.
 - **Storyboard:** [showcase/SKILL.md](showcase/SKILL.md). Use static style frames and
   descriptions, adding small motion studies only when useful.

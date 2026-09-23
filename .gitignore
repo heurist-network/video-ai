@@ -1,11 +1,42 @@
+# Local credentials and dependencies
 .env
 .env.*
 !.env.example
 node_modules/
-reference-lab/library/
-library.tar.gz
-media.tar.gz
-
-.DS_Store
+.venv/
 __pycache__/
 *.pyc
+.DS_Store
+
+# Completed projects and generated outputs
+/clips/
+/samples/
+/reference-lab/library/
+/reference-lab/index.html
+outputs/
+renders/
+export/
+exports/
+checks/
+
+# Media, Blender scenes, and archives
+*.mp4
+*.mov
+*.webm
+*.mkv
+*.avi
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.exr
+*.wav
+*.mp3
+*.m4a
+*.blend
+*.blend1
+*.zip
+*.tar
+*.gz
+*.sqlite

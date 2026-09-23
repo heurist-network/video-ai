@@ -1,8 +1,0 @@
-{
-  "name": "daily-stock-direction",
-  "private": true,
-  "scripts": {
-    "check": "npx --yes hyperframes@0.8.40 check",
-    "render": "npx --yes hyperframes@0.8.40 render"
-  }
-}

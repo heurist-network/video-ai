@@ -14,7 +14,9 @@ Agents start with [AGENTS.md](AGENTS.md). Humans and agents can follow the
 | `showcase/` | Reusable storyboard skill, templates and review helpers |
 | `docs/` | Workflow, folder ownership and lessons from the pilot |
 
-The motion corpus (`reference-lab/library`) is a Release asset, not git. After clone:
+Completed clips, sample projects, generated galleries, bundled media, dependencies, and credentials are excluded from the source tree. Supply local media as needed by the workflows.
+
+The optional motion corpus (`reference-lab/library`) is stored separately as a Release asset. To download it explicitly:
 
 ```sh
 gh auth login

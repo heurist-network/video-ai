@@ -5,10 +5,12 @@ import {createHash,randomUUID} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import ffmpeg from 'ffmpeg-static';
 import probe from 'ffprobe-static';
-const ROOT=path.dirname(fileURLToPath(import.meta.url));
-try{process.loadEnvFile(path.join(ROOT,'../.env'));}catch{}
+const TOOL_ROOT=path.dirname(fileURLToPath(import.meta.url));
+try{process.loadEnvFile(path.join(TOOL_ROOT,'../.env'));}catch{}
 const [command,source,...rest]=process.argv.slice(2);
 const option=(name,fallback)=>{const i=rest.indexOf(name);return i<0?fallback:rest[i+1];};
+const ROOT=path.resolve(option('--output-root',TOOL_ROOT));
+const probePath=option('--probe-path',process.env.FFPROBE_PATH||probe.path);
 const model=option('--model','gemini-3.8-flash');
 const fps=Number(option('--fps','24'));
 const question=option('--question','');
@@ -34,20 +36,21 @@ export function validate(card,duration){
 }
 async function main(){
  if(command==='check-model'){const d=await request(`${api}/models/${model}`);console.log(JSON.stringify({name:d.name,methods:d.supportedGenerationMethods},null,2));return;}
- if(command!=='analyze'||!source){console.log('Usage: node analyze.mjs analyze /path/video.mp4 [--fps 24] [--resolution high|low|medium|unspecified] [--model gemini-3.8-flash]\n       node analyze.mjs check-model');return;}
+ if(command!=='analyze'||!source){console.log('Usage: node analyze.mjs analyze /path/video.mp4 [--fps 24] [--resolution high|low|medium|unspecified] [--model gemini-3.8-flash]\nOptions: --output-root DIR --prompt-file FILE --probe-path BIN --run-id ID --question TEXT\n       node analyze.mjs check-model');return;}
  if(!process.env.GEMINI_API_KEY)throw Error('GEMINI_API_KEY missing from ../.env');
  if(!['HIGH','LOW','MEDIUM','UNSPECIFIED'].includes(resolution))throw Error('Invalid resolution');
  if(!(fps>0&&fps<=24))throw Error('fps must be between 0 and 24');
  const sourcePath=path.resolve(source), bytes=fs.readFileSync(sourcePath), hash=createHash('sha256').update(bytes).digest('hex');
- const metadata=JSON.parse(execFileSync(probe.path,['-v','quiet','-show_format','-show_streams','-of','json',sourcePath],{encoding:'utf8'}));
+ const metadata=JSON.parse(execFileSync(probePath,['-v','quiet','-show_format','-show_streams','-of','json',sourcePath],{encoding:'utf8'}));
  const duration=Number(metadata.format.duration);if(!Number.isFinite(duration)||duration<=0)throw Error('Invalid video duration');
  const id=option('--run-id',`${hash.slice(0,12)}-${new Date().toISOString().replace(/[:.]/g,'-')}-${randomUUID().slice(0,8)}`);
  if(!/^[a-zA-Z0-9_-]+$/.test(id))throw Error('Invalid run ID');
  if(fs.existsSync(path.join(ROOT,'library/references',id)))throw Error('Run ID already exists');
  const dir=path.join(ROOT,'library/references',id);fs.mkdirSync(path.join(dir,'frames'),{recursive:true});
+ fs.mkdirSync(path.join(ROOT,'library/sources'),{recursive:true});
  const stored=path.join(ROOT,'library/sources',hash+path.extname(sourcePath));if(!fs.existsSync(stored))fs.copyFileSync(sourcePath,stored);
  const manifest={id,source_path:path.relative(ROOT,stored),source_sha256:hash,original_filename:path.basename(sourcePath),model,sampling_fps:fps,sample_delta_ms:1000/fps,media_resolution:resolution,duration_s:duration,created_at:new Date().toISOString(),status:'running',review_status:'unreviewed',has_audio:metadata.streams.some(s=>s.codec_type==='audio')};save(path.join(dir,'source.json'),manifest);save(path.join(dir,'media.json'),metadata);
- const prompt=fs.readFileSync(path.join(ROOT,'prompt.txt'),'utf8')+`\nMeasured duration: ${duration} seconds.`+(question?'\nAdditional inspection question: '+question:'');
+ const prompt=fs.readFileSync(option('--prompt-file',path.join(TOOL_ROOT,'prompt.txt')),'utf8')+`\nMeasured duration: ${duration} seconds.`+(question?'\nAdditional inspection question: '+question:'');
  fs.writeFileSync(path.join(dir,'prompt.txt'),prompt);
  let uploaded;
  try{
