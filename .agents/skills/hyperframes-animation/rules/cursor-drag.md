@@ -79,7 +79,7 @@ tl.fromTo(
 
 ## Variations
 
-- **Corner-handle proportional resize** — width/height tweens are forbidden, so the resize renders as uniform `scale` with `transform-origin` at the **opposite (anchor) corner**: the anchor stays put, the dragged corner travels. The corner's position is _linear in scale_ (`corner = anchor + scale × (corner₀ − anchor)`), so a cursor tween to the corner's end position with the **same duration and ease** stays glued to the handle exactly:
+- **Corner-handle proportional resize** — the resize renders as uniform `scale` rather than a width/height tween, with `transform-origin` at the **opposite (anchor) corner**: the anchor stays put, the dragged corner travels. The corner's position is _linear in scale_ (`corner = anchor + scale × (corner₀ − anchor)`), so a cursor tween to the corner's end position with the **same duration and ease** stays glued to the handle exactly:
 
   ```js
   tl.to(

@@ -57,8 +57,7 @@ For ordinary correction or polish, persist the final treatment's
 preset/adjustment JSON.
 Do not generate a `.cube` LUT merely to encode exposure, shadows, contrast, or
 warmth. Use a LUT only when the user supplies one or the selected treatment
-explicitly owns one. `resolve --type grade --for ... --analyze` is measurement
-evidence, not permission to replace the chosen treatment with a generated LUT.
+explicitly owns one.
 Do not recreate supported vignette, grain, blur, pixelate, color, or treatment
 effects with CSS/SVG overlays; that bypasses Studio controls and the canonical
 preview/render shader path.

@@ -49,7 +49,7 @@
 - trailing-dots wait state → `sine-wave-loop` (finite repeats; step the opacity of 3 dots on a shared phase)
 - lateral screen slide with persistent chrome → the existing screen-cycling mapping (`3d-page-scroll` translateX form inside the clipped surface); chrome sits outside the sliding layer
 - notification banner spring-in / squircle pop (in-device) → `spring-pop-entrance`
-- lockscreen fade/blur-away + card expands to fill the device face → `card-morph-anchor` (uniform-scale container morph — never tween width/height) + `depth-of-field-blur` (the blur-away)
+- lockscreen fade/blur-away + card expands to fill the device face → `card-morph-anchor` (uniform-scale container morph) + `depth-of-field-blur` (the blur-away)
 - commit-synced micro push-in (camera punctuates the Approve/tap, then re-locks) → `multi-phase-camera` (single short push phase placed at the state transition)
 - button press dip + fill flip / Approve press-down spring-back → `press-release-spring` (already mapped; the fill flip is its color-transition variation)
 - spinner processing state → `svg-icon-enrichment` (rotating internal element with explicit SVG center)

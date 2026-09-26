@@ -133,7 +133,7 @@ tl.to(
 
 ## Critical Constraints
 
-- **`scaleY` / `scaleX` / `clipPath`, never `height`/`width` tweens** — author each bar's final height in CSS and scale from 0.
+- **`scaleY` / `scaleX` / `clipPath` rather than `height`/`width` tweens** — author each bar's final height in CSS and scale from 0.
 - **`transform-origin`** must be `bottom` (bars grow up) / `left` (fills grow right) — the default center origin scales from the middle and looks wrong.
 - **`.fill` needs `width: 100%`** — a zero-width fill scaled by any factor is still invisible, and automated gates may miss it.
 - **Measure, don't hard-code** — ring length via `getTotalLength()`; a hard-coded circumference breaks if the radius changes.

@@ -15,7 +15,7 @@ Hand-author only (a) gaps no block/rule covers, (b) the `asset-fusion` affordanc
 ## The HF contract (non-negotiable)
 
 - Root `#stage` carries `data-composition-id`, `data-start="0"`, `data-duration=<s>`, `data-fps`, `data-width`, `data-height`.
-- Exactly ONE `gsap.timeline({ paused:true })`; register `window.__timelines["<id>"] = tl;`; end with `tl.seek(0)`. **Never `tl.play()`** for render-critical motion. No timers / async / event-driven timeline build. Finite repeats only.
+- Exactly ONE `gsap.timeline({ paused:true })`; register `window.__timelines["<id>"] = tl;`; end with `tl.seek(0)`. **Never `tl.play()`** for render-critical motion. No timers or event-driven timeline build; register the timeline only after an async build completes. Finite repeats only.
 - **Timed clips** need `class="clip"` + a stable `id`. Timeline-driven groups inside one full-duration clip don't each need timing attrs.
 - **Fonts**: prefer local `@font-face` (.woff2) for deterministic / offline render; CDN Google Fonts do render (compiler caches + injects `@font-face`) but warn + need network.
 - **Deterministic only** — no `Date.now()` / `Math.random()` / network.

@@ -9,15 +9,14 @@
 //
 // Usage from a demo script:
 //
-//   const { loadTarget, createStage } = require('../stage');
-//   const target = loadTarget('heurist-finance');
+//   const { loadTarget, createStage } = require('<repo>/tools/stage');
+//   const target = loadTarget('./target.json');
 //   const stage = await createStage({ target, outDir: '/path/to/assets' });
 //   await stage.page.goto(...); stage.mark('ready'); await stage.glide(x, y);
 //   await stage.finish();            // writes marks.json, returns { raw, marks }
 
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
 const {createRequire} = require('module');
 const {runId} = require('./output');
 
@@ -51,23 +50,9 @@ function requirePlaywright() {
 // Target config
 // ---------------------------------------------------------------------------
 
-// Targets are instance data, so they live outside this repo by default: the skill
-// ships the schema, the project keeps its own config next to its evidence. A bare
-// name resolves into the work bucket; anything with a slash is taken as a path.
-function targetPath(nameOrPath) {
-  if (nameOrPath.includes('/') || nameOrPath.endsWith('.json')) return path.resolve(nameOrPath);
-  const bucket = process.env.AGENT_WORK_DIR || path.join(os.homedir(), '.agents/work');
-  return path.join(bucket, nameOrPath, 'showcase/target.json');
-}
-
-function loadTarget(nameOrPath) {
-  const p = targetPath(nameOrPath);
-  if (!fs.existsSync(p)) {
-    throw new Error(
-      `no target config at ${p}\n` +
-        'Copy targets/EXAMPLE.json there and fill it in, or pass an explicit path.'
-    );
-  }
+// Targets are instance data, so each project keeps its own target.json next to its evidence.
+function loadTarget(file) {
+  const p = path.resolve(file);
   const t = JSON.parse(fs.readFileSync(p, 'utf8'));
   for (const k of ['name', 'app']) {
     if (!t[k]) throw new Error(`target ${p} is missing required key "${k}"`);
@@ -315,7 +300,7 @@ async function createStage({ target, outDir, headless = true }) {
   const { chromium } = requirePlaywright();
   const browser = await chromium.launch({
     headless,
-    executablePath: process.env.SHOWCASE_BROWSER || undefined,
+    executablePath: process.env.CAPTURE_BROWSER || undefined,
     args: ['--no-sandbox', '--disable-dev-shm-usage', '--force-color-profile=srgb'],
   });
   const ctx = await browser.newContext({
@@ -399,4 +384,4 @@ async function createStage({ target, outDir, headless = true }) {
   return { browser, ctx, page, mark, marks, glide, waitForSettled, finish, sleep, viewport: { width: vw, height: vh } };
 }
 
-module.exports = { loadTarget, targetPath, createStage, sleep, requirePlaywright };
+module.exports = { loadTarget, createStage, sleep, requirePlaywright };

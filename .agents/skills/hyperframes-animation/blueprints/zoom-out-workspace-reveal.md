@@ -52,7 +52,7 @@
 - motif shift/sweep-in on a card → `gsap-effects` (masked translate) or `techniques.md` clip-path reveal
 - file-attachment card fade-in → `spring-pop-entrance` (soft) / `gsap-effects` fade
 - pane content swap via quick white-out → `discrete-text-sequence` (whole-state swap at a threshold) + `gsap-effects` (white flash overlay with attack-decay opacity envelope)
-- pane expands full-width over neighbor (layout motion) → `anchored-layout-expand` (one-axis layout hand-off; width/height tweens stay forbidden)
+- pane expands full-width over neighbor (layout motion) → `anchored-layout-expand` (one-axis layout hand-off)
 - checklist items struck-through / status states → static content, or `discrete-text-sequence` if they check off on screen
 - long static hold + cursor drift to rest → hold needs no rule; the drift is a single slow `gsap-effects` translate that ARRIVES somewhere meaningful (rests near the payoff stat) — it performs, it is not idle wobble
 - ends mid-action (Hook) → the playhead/canvas tweens simply run to the composition edge — no exit move, no rule

@@ -70,14 +70,14 @@ finalWorldX = Math.min(INITIAL_OFFSET, trackingOffset)
 
 ```js
 // Pre-measure the target text width to compute tracking distance.
-// Measure SYNCHRONOUSLY — no fonts.ready gate (see Critical Constraints).
+// Measured at parse time; see Critical Constraints for post-font re-measurement.
 const textEl = document.getElementById("reveal-text");
 const targetCursorScreenX = CURSOR_TARGET_FRACTION * VIEWPORT_WIDTH;
 const fullWidth = textEl.scrollWidth; // total text width after full reveal
 const trackingDelta = Math.max(0, VIEWPORT_PAD_LEFT + fullWidth - targetCursorScreenX);
 
-// Phase 1 — text reveals progressively; camera holds. maxWidth tween
-// (width/left/top tweens are forbidden); ease "none" = linear typing rate.
+// Phase 1 — text reveals progressively; camera holds. maxWidth tween;
+// ease "none" = linear typing rate.
 tl.fromTo(
   ".search-bar .text",
   { maxWidth: 0 },
@@ -121,7 +121,7 @@ tl.to(
 
 ## Critical Constraints
 
-- **Build the timeline SYNCHRONOUSLY — no `fonts.ready` gate.** HF renders frames in parallel workers, each a fresh browser. A `document.fonts.ready.then(...)` wrapper means some workers seek frames BEFORE the Promise resolves and find no timeline → those frames render at CSS initial state (`max-width: 0` ⇒ empty text) while others render correctly → visible flicker. Register the timeline at script-parse time: the camera math tolerates a few percent width error from fallback-font measurement; worker-race flicker is unacceptable. If precise post-font measurement matters, re-measure inside the tween's `onUpdate` (still deterministic per-frame), or set `font-display: block` on the @font-face.
+- **Register the timeline only after its build completes.** An empty timeline registered before a `document.fonts.ready` callback fills it renders blank frames (`lint`: `gsap_timeline_registered_before_async_build`). Building at script-parse time is simplest: the camera math tolerates a few percent width error from fallback-font measurement. If precise post-font measurement matters, re-measure inside the tween's `onUpdate` (still deterministic per-frame), or set `font-display: block` on the @font-face.
 - **Measure with `getBoundingClientRect()` / `scrollWidth` / probe nodes**, never character count × font-size — proportional fonts have variable glyph widths.
 - **Continuous math at the phase boundary** — the `Math.min(INITIAL_OFFSET, trackingOffset)` form, never a hard threshold branch.
 - **`white-space: nowrap` on the world** and pre-allocated width (tween `maxWidth` to the full target width) — prevents layout shift mid-tween.

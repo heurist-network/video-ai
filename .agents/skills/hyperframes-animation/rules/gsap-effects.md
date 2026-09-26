@@ -135,7 +135,7 @@ python skills/hyperframes-creative/scripts/extract-audio-data.py video.mp4 --fps
 
 Output: `{ "fps": 30, "totalFrames": 5415, "frames": [{ "time": 0.0, "rms": 0.42, "bands": [0.8, 0.6, 0.3] }] }` — `rms` (0-1) is overall loudness; `bands[]` (0-1) are frequency magnitudes, index 0 = bass, each band normalized independently.
 
-### Loading (Synchronously)
+### Loading
 
 Inline the JSON for small files (< ~500 KB), or sync XHR for large ones:
 
@@ -146,7 +146,7 @@ xhr.send();
 const AUDIO_DATA = JSON.parse(xhr.responseText);
 ```
 
-**Do NOT use async `fetch()`** — HyperFrames reads `window.__timelines` synchronously after page load; building the timeline inside `.then()` means it isn't ready when capture starts.
+An async `fetch()` also works if the timeline is registered on `window.__timelines` only after the data arrives and the tweens are built; registering an empty timeline early renders blank frames.
 
 ### Driving the Timeline
 

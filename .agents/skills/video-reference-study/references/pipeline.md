@@ -1,6 +1,6 @@
 # Evidence and annotation pipeline
 
-Use the existing `reference-lab/analyze.mjs`, not the historical TypeSafe-specific script with absolute paths. It preserves raw responses, prompts, usage, source hashes, cards and evidence frames. Newly supported options isolate each study without changing the default library workflow:
+Use `reference-lab/analyze.mjs`. It preserves raw responses, prompts, usage, source hashes, cards and evidence frames. Newly supported options isolate each study without changing the default library workflow:
 
 - `--output-root DIR`: writes `DIR/library/references/<run-id>/` and `DIR/library/sources/`.
 - `--prompt-file FILE`: overrides the base annotation prompt.
@@ -10,7 +10,7 @@ Use the existing `reference-lab/analyze.mjs`, not the historical TypeSafe-specif
 
 ## Local media preparation
 
-Find working `ffmpeg` and `ffprobe` on PATH or in `~/.local/bin`. Test `-version`. This Mac previously had an x86 binary in a package named `darwin/arm64`; trust execution, not the directory name. The repo's FFmpeg fallback is `reference-lab/node_modules/ffmpeg-static/ffmpeg`. Do not hardcode a failed probe path or fabricate duration from an unavailable tool.
+Find working `ffmpeg` and `ffprobe` on PATH or in `~/.local/bin` and test `-version`; the repo's fallback is `reference-lab/node_modules/ffmpeg-static/ffmpeg`.
 
 Example, from the repository root; substitute concrete paths and keep shell arguments quoted:
 
@@ -25,7 +25,7 @@ ffmpeg -hide_banner -loglevel error -ss "$SOURCE_TIME" -i "$SOURCE" \
 
 Create directories first. Re-encode accurate analysis clips instead of assuming stream-copy cuts land exactly on arbitrary requested boundaries. Record requested source start, measured resulting duration and any known offset uncertainty. Keep native source FPS when cutting; model sampling is a separate setting. For variable-frame-rate material use presentation timestamps, not `frame / nominal_fps` as an exact clock.
 
-Store a playable copy of the original under the study root for a standalone report. Do not rely on symlinks escaping the served directory. Contact sheets help shortlist; important overlaps require denser inspection, often 0.1–0.25s and frame-level around suspected cuts/snaps. Avoid blindly exporting every frame of a long film.
+Store a playable copy of the original under the study root; the report server rejects symlinks that escape it. Contact sheets help shortlist; important overlaps require denser inspection, often 0.1–0.25s and frame-level around suspected cuts/snaps. Avoid blindly exporting every frame of a long film.
 
 ## Model passes
 
@@ -43,9 +43,9 @@ node reference-lab/analyze.mjs analyze "$STUDY/clips/scene-01.mp4" \
   --run-id scene-01 --prompt-file "$SKILL/references/deep-prompt.txt"
 ```
 
-`SKILL` is this skill directory. These are starting settings, not magic values: use economical overview sampling and dense sampling on short complex clips. Keep model-local timestamps local in raw cards. Reviewed report chapter/frame times are original-source seconds; report event times are local to their selected clip.
+`SKILL` is this skill directory. These are starting settings: use economical overview sampling and dense sampling on short complex clips. Keep model-local timestamps local in raw cards. Reviewed report chapter/frame times are original-source seconds; report event times are local to their selected clip.
 
-The analyzer loads the repository `.env`; never print it or API keys. Analysis sends video to the configured Gemini service. Do not trigger additional annotation when existing usable runs suffice. If access, quota or the requested model fails, retain completed work and explain the actual blocker; don't silently replace the requested model. For malformed output, inspect the raw response, narrow the clip/question, and retry once with a new run ID. A failed second attempt warrants a disclosed partial result or user guidance, not an unbounded paid retry loop.
+The analyzer loads the repository `.env`; never print it or API keys. Analysis sends video to the configured Gemini service. Do not trigger additional annotation when existing usable runs suffice. If access, quota or the requested model fails, retain completed work and explain the actual blocker; don't silently replace the requested model. For malformed output, inspect the raw response, narrow the clip/question, and retry once with a new run ID. After a failed second attempt, report the partial result and ask.
 
 ## Review and assembly
 

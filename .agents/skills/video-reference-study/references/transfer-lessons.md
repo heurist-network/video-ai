@@ -6,11 +6,11 @@ Lessons from the TypeSafe study and the Inflow revisions are diagnostic question
 
 **Complexity comes from relationships.** Counter + grid + annotation can explain one event. Unrelated brackets reconfiguring each frame are merely activity. A parent push-in does not turn a static chart into many independent animated components. Record quiet intervals without treating them as defects.
 
-**Emphasis often needs hierarchy rather than more effects.** If a borderless gate is dwarfed by neighboring cards, scale and reduced competition may work better than a faint halo. Reserve a strong accent for the active event when that matches the reference's logic; don't turn this into a universal single-accent-color rule.
+**Emphasis often needs hierarchy rather than more effects.** If a borderless gate is dwarfed by neighboring cards, scale and reduced competition may work better than a faint halo. Reserve a strong accent for the active event when that matches the reference's logic.
 
 **Static polish does not establish motion quality.** A beautiful board can still produce slide-like pacing, repeated resets, flickering text or snapped alignment. Inspect the time between the poses. Passing renderer checks and successful playback are different from visual approval.
 
-**Text is geometry in motion.** In the Inflow implementation, a mid-tween anchor change caused a roughly 114 px local one-frame displacement; a fast amount movement reached 62 px. Fixing alignment and coordinating trajectories reduced those measured maxima. These numbers describe that artifact, not general quality thresholds. Look for discontinuities, sudden reflow, instantaneous word swaps, pivot changes caused by text bounds, and independent axis timings that kink a path. Do not claim these implementation causes in an external reference unless source code or direct evidence supports them.
+**Text is geometry in motion.** Look for discontinuities, sudden reflow, instantaneous word swaps, pivot changes caused by text bounds, and independent axis timings that kink a path. Do not claim these implementation causes in an external reference unless source code or direct evidence supports them.
 
 **Precise overlap beats “everything moves.”** Let one action hand attention to the next before it fully settles, where useful. Keep the final claim readable. A forced perpetual drift to satisfy a motion checker makes the analysis and the remake worse.
 

@@ -135,7 +135,7 @@ tl.fromTo(
 
 ## Critical Constraints
 
-- **NEVER tween `width` / `height` / `top` / `left` / `margin` / `padding`** — the mask's height is a CSS constant; only its children transform. Tweening the mask IS the forbidden move this rule replaces.
+- **Do not tween the mask's `width` / `height` / `top` / `left` / `margin` / `padding`** — its height is a CSS constant; only its children transform.
 - **`data-layout-allow-overflow` on the mask** — the collapsed phase parks the sheet outside the mask's box by construction, which trips the `hyperframes check` layout gate (`container_overflow`). The flag is the sanctioned waiver: this overflow is the technique working as designed, not a bug.
 - **Sheet + below share one tween (or one proxy)** — matched-but-separate tweens on the two sides of the contact edge are the classic seam bug.
 - **Everything downstream rides `#below`** — content outside the wrapper is overlapped at t=0 and orphaned during the grow.

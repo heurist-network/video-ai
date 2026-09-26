@@ -11,7 +11,7 @@ A free-floating container morphs apparent size, corner radius, and surface treat
 
 ## How It Works
 
-Since `width`/`height` tweens are forbidden, **substitute uniform `scale` for apparent size**; the remaining morph channels are **paint-only**: `borderRadius`, `background`, `boxShadow`. All channels ride ONE tween (one ease, one duration) so the shape morphs in lockstep. Content choreography: old content fades out during the first ~40% of the morph, new content fades in during the last ~40% — the shape-only gap between is the natural "blink." Optionally the morph card itself fades at the very end, revealing the real next-shot element rendered behind it.
+**Substitute uniform `scale` for apparent size** rather than tweening `width`/`height`; the remaining morph channels are **paint-only**: `borderRadius`, `background`, `boxShadow`. All channels ride ONE tween (one ease, one duration) so the shape morphs in lockstep. Content choreography: old content fades out during the first ~40% of the morph, new content fades in during the last ~40% — the shape-only gap between is the natural "blink." Optionally the morph card itself fades at the very end, revealing the real next-shot element rendered behind it.
 
 ## Recipe
 
@@ -99,7 +99,7 @@ tl.to(
 
 | channel        | how                                                                                            |
 | -------------- | ---------------------------------------------------------------------------------------------- |
-| apparent size  | uniform `scale` — the substitution for the forbidden `width`/`height` tween; aspect preserved  |
+| apparent size  | uniform `scale` — the substitution for a `width`/`height` tween; aspect preserved  |
 | `borderRadius` | paint-only; pre-scale units — tween to `APPARENT_RADIUS / END_SCALE`, ≤ half the smaller side  |
 | `background`   | paint-only; gradients interpolate only with equal stop counts (solid→solid: `backgroundColor`) |
 | `boxShadow`    | paint-only; base shadow → accent glow shifts emphasis                                          |
@@ -123,7 +123,7 @@ tl.to(
 
 ## Critical Constraints
 
-- **❗ Uniform-scale substitution** — never tween `width`/`height`; `scale` + the paint-only channels (`borderRadius`, `background`, `boxShadow`) are the ONLY morph properties.
+- **❗ Uniform-scale substitution** — do not tween `width`/`height` here; `scale` + the paint-only channels (`borderRadius`, `background`, `boxShadow`) are the ONLY morph properties.
 - **❗ Handoff anchor must be pixel-identical to the card's final state** — same apparent size, radius, background, shadow, inner icon dimensions. Any delta = a visible pop during the crossfade. Can't match exactly? Drop the handoff and hold the morph card.
 - **❗ Stacking by DOM order, never a z-index snap mid-fade** — render the anchor before the card; a `tl.set({ zIndex })` during an active opacity tween flips stacking before the fade finishes and flickers.
 - **`overflow: hidden`** on the card — content must clip as the radius changes.

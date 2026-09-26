@@ -51,7 +51,7 @@ For copyable combined picture/sound recipes, use `/hyperframes-core` → `refere
 
 1. Identify the animated subject, visible states, final state, and runtime.
 2. Choose the smallest mechanism that proves the prompt. Read `references/keyframe-patterns.md` only if the mechanism is unclear.
-3. Author seek-safe keyframes in the declared runtime. Build synchronously and register the runtime instance.
+3. Author seek-safe keyframes in the declared runtime. Register the runtime instance once its build completes.
 4. Verify with `hyperframes lint`, `hyperframes check`, `hyperframes keyframes`, one focused `--shot`, and snapshots at proof times.
 5. If proof fails, fix the source keyframes and rerun the smallest failing diagnostic before rendering.
 
@@ -72,7 +72,7 @@ For copyable combined picture/sound recipes, use `/hyperframes-core` → `refere
 
 GSAP:
 
-- build synchronously at page load
+- build at page load; register only after the build completes
 - use `gsap.timeline({ paused: true })`
 - register as `window.__timelines[compositionId]`
 - registry key must match `data-composition-id`
@@ -107,7 +107,7 @@ Never use for render-critical motion:
 - unseeded `Math.random()`
 - hover/scroll triggers
 - timers
-- async-created timelines
+- timelines registered before their build finishes
 - unregistered `requestAnimationFrame`
 - infinite loops
 
@@ -254,7 +254,7 @@ A helper-selector shot is not proof. An onion shot over a broken full frame is n
 | identity break     | keep one element alive, use shared source/final boxes, remove substitute crossfade |
 | fake 3D            | add z/camera travel, occlusion, angled proof                                       |
 | wrong final        | add final hold, snapshot final-minus-hold and exact final                          |
-| unseekable runtime | pause autoplay, register instance, remove timers, build synchronously              |
+| unseekable runtime | pause autoplay, register instance after the build, remove timers                   |
 | unreadable text    | preserve line boxes, reduce displacement, add final hold, snapshot text frames     |
 
 ## Done

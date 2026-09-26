@@ -2,8 +2,8 @@
 
 Use the focused [local runtime essentials](hyperframes-runtime.md) when writing or
 diagnosing composition HTML, and load official skills for the domains needed below.
-The local reference is a trimmed and official skills contain more details.
-The official skills live under `.agents/skills/`.
+The local reference is trimmed; the official skills contain more detail.
+The official skills live under `.agents/skills/`; `.claude/skills` links there for Claude Code.
 
 | Task | Read |
 | --- | --- |
@@ -19,7 +19,7 @@ The official skills live under `.agents/skills/`.
 
 ## How this fits the local workflow
 
-The [local storyboard skill](../showcase/SKILL.md) owns our HTML review board. When iterating, resume from the conversation and storyboard; do not create a second or versioned storyboard as a competing decision source.
+The [local storyboard skill](../storyboard/SKILL.md) owns our HTML review board. When iterating, resume from the conversation and storyboard; do not create a second storyboard.
 
 When reviewing, inspect the actual output image frames. Do not treat source-code inspection as having watched a video.
 

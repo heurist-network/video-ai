@@ -15,11 +15,11 @@ python3 .agents/skills/video-reference-study/scripts/serve_report.py \
   samples/<slug>-study --port 8780
 ```
 
-The renderer writes `index.html` under `--root`. Media paths are relative to that root; keep assets inside it. The server binds localhost, supports byte ranges for video seeking, and rejects symlink escapes. Inspect the browser and test controls before delivering a link. No report text should say “Click to play,” “Select a chapter to seek the original,” or similar filler.
+The renderer writes `index.html` under `--root`. Media paths are relative to that root; keep assets inside it. The server binds localhost, supports byte ranges for video seeking, and rejects symlink escapes. Inspect the browser and test controls before delivering a link.
 
 ## Reviewed JSON contract
 
-All prose is plain text, escaped by the renderer. Chapter and deep-dive ranges use **original-source seconds**. Event start/end use **local clip seconds**. Evidence frame `time_s` uses **original-source seconds**. These conventions are intentionally different and must not be guessed.
+All prose is plain text, escaped by the renderer. Chapter and deep-dive ranges use **original-source seconds**. Event start/end use **local clip seconds**. Evidence frame `time_s` uses **original-source seconds**.
 
 ```json
 {
@@ -59,7 +59,7 @@ The sample is a schema illustration, not observations to reuse. `scenes` may be 
 ## Review the result
 
 - Coverage spans the measured source duration; chapter ordering and intervals are checked.
-- Each detailed claim is traceable to the right excerpt and source time. Requested sampling is not described as frame-accurate model analysis.
+- Each detailed claim is traceable to the right excerpt and source time.
 - Chapter buttons seek the original; event bars and frame buttons seek the correct local clip. Copy buttons copy the actual prompt.
 - Source and clips load, seek and play. Test a nonzero HTTP range and playback after a deep seek, not only initial loading.
 - Frames and video remain usable on narrow screens; tables may scroll within their own container, not stretch the page.

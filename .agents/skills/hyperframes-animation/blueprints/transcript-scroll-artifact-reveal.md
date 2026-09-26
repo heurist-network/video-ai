@@ -36,7 +36,7 @@
 - ONE push-in onto the highlighted selection / slow push-in + lateral pan settling on highlighted cells → `coordinate-target-zoom` (measured off-center target — the lateral pan IS the counter-translate component), sequenced under `multi-phase-camera` when it follows the window scale-up
 - fast decelerating zoom-OUT to the full workspace → `coordinate-target-zoom` (zoom-out variation: open at the zoomed-in framing, pull to scale 1 with `power3.out`/`power4.out`) or `viewport-change` (single continuous pull on the `cam` object)
 - artifact window scales up from small toward full frame on the click → `spring-pop-entrance` (hero arrival scale-up; tune overshoot to ~0 / `power3.out` so the window reads weighty, not bouncy)
-- collapsible row expands into a sub-task stack / inline panel expands below the highlighted line → `anchored-layout-expand` (in-flow accordion growth pushing subsequent content DOWN — never tween width/height) + `waterfall-entry` (or `spring-pop-entrance` stagger) on the arriving children
+- collapsible row expands into a sub-task stack / inline panel expands below the highlighted line → `anchored-layout-expand` (in-flow accordion growth pushing subsequent content DOWN) + `waterfall-entry` (or `spring-pop-entrance` stagger) on the arriving children
 - phone-screen instant swap on the coda tab click → `discrete-text-sequence` (discrete whole-state swap; instant, no in-artifact camera move)
 - green verb highlights, model-tag pills, check-circle strikethroughs, yellow forecast cells, edge fade masks → static styling of the surface content — no motion rule needed
 

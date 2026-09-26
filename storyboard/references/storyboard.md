@@ -5,10 +5,9 @@ This guide owns the HTML page contract.
 
 The storyboard is one hand-authored HTML file, `storyboard/index.html`, that the team
 opens in a browser. The agent writes and edits it directly as directors decide.
-[The template](../assets/board/index.html) starts with one style block and one script;
-shared local scene/timing modules may be extracted for native reuse. Copy it and replace
-its example content. It demonstrates the page contract and one motion study, not a
-finished continuous film or parity with the separate native example.
+[The template](../assets/board/index.html) starts with one style block and one script.
+Copy it and replace its example content. It demonstrates the page contract and one
+motion study, not a finished continuous film.
 
 ```sh
 node "$SKILL/scripts/board.mjs" new "$PROJECT/storyboard"
@@ -17,16 +16,14 @@ node "$SKILL/scripts/board.mjs" check "$PROJECT/storyboard/index.html"
 
 `check` validates the contract below and prints the shot list with durations as JSON.
 Run it after each edit, before sharing the page and when section 2 needs the shot list.
-It checks shot IDs, positive durations, titles and frame presence. It does not validate
-visible timing labels, selected-variant behavior, continuity, lock authority or native
-parity. Review those separately. Host the directory on an authorized review surface;
-images it references sit beside it. Do not expose private product data publicly.
+It checks shot IDs, positive durations, titles and frame presence; review timing labels,
+variant behavior and continuity in the browser. Images the page references sit beside
+it. Do not publish private product data.
 
 ## Page structure
 
 - Header: title, duration and a brief statement of any open creative choices. Show a
-  revision identifier when useful. Approval remains conversational; no reviewer/time
-  record is required. Offer an animatic button only if that preview exists.
+  revision identifier when useful. Offer an animatic button only if that preview exists.
 - A nav listing every shot.
 - One `<section>` per shot: number, title, timing range, the frame, then a three-column
   notes grid with **Composition**, **Motion** and **Source / boundary**.
@@ -77,10 +74,8 @@ A shot with alternatives registers one entry in the script's `studies` map:
 the variant buttons, Start / Transition / Settled phase buttons, Replay once, a status
 line and the reduced-motion fallback. Variants differ in
 keyframes, not in DOM copies. Coordinates are in `cqw`. Keep source-backed values
-fixed unless numeric change is part of the brief. For price movement, use timestamped
-observations; arbitrary interpolation is a visual tween, not an observed market tick.
-Never animate a stock price from zero merely because a counter reference does so.
-The frame must read as the settled shot when loaded.
+fixed unless numeric change is part of the brief; animate a price only through observed
+values, never from zero. The frame must read as the settled shot when loaded.
 
 ## Feedback and lock
 
@@ -89,14 +84,10 @@ Reflect actual approval in the header and data-status only after it is received;
 identify the approved board revision when useful. Never infer a lock.
 
 The template's **Play animatic** moves frames into a full-screen overlay for each
-`data-duration`, replays registered studies, then restores the frames. Its timer-driven
-player is a rough sequencing aid: Stop/Escape is observed after the current wait, and
-keyframe-only shots have no connecting motion. Do not treat that starter behavior as
-the production playback contract. A static board can lock with described transitions and explicit implementation latitude.
-Build a motion study only where needed to settle a creative choice; implement full
-transitions and deterministic seeking during production.
+`data-duration`, replays registered studies, then restores the frames. It is a rough
+sequencing aid: keyframe-only shots have no connecting motion. A board can lock with
+transitions described in words; build a motion study only where needed to settle a
+creative choice, and implement full transitions during production.
 
-Keep all revisions and variant IDs in project version control or unique snapshots.
-Apply requested changes and return the revised result for feedback. A request to
-produce with specified edits already authorizes those edits and production. Ask before
-materially departing from that scope; do not demand a new whole-board lock for each fix.
+Keep every revision. Apply requested changes and return the revised result for feedback;
+the [workflow](../../docs/workflow.md) owns what authorizes production.

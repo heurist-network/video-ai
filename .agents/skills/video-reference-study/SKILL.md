@@ -21,7 +21,7 @@ Map the entire duration into meaningful chapters, including simple footage, titl
 
 ## Choose and examine the important scenes
 
-Choose scenes for communication value, temporal layering, object transformation, hierarchy changes or effective restraint. Usually a few detailed studies beat exhaustive shallow annotations. Give a sentence explaining each selection; do not force a quota, minimum track count, or invented complexity.
+Choose scenes for communication value, temporal layering, object transformation, hierarchy changes or effective restraint. Usually a few detailed studies beat exhaustive shallow annotations. Give a sentence explaining each selection; do not force a quota.
 
 Use [deep-dive.md](references/deep-dive.md) and the deep annotation prompt in [pipeline.md](references/pipeline.md). Inspect each chosen scene at normal speed and through closely spaced source frames around state changes. Retain a little lead-in/out when a handoff needs context. Preserve local clip time and original time; convert only with the recorded clip offset.
 
@@ -33,7 +33,7 @@ For each scene establish:
 - How the explanation develops after entrances, what holds, and what survives into the next scene.
 - Concrete transfer instructions, evidence limitations and common ways a recreation would lose the mechanism.
 
-Treat model output as a hypothesis. Correct it against moving footage; record material disagreements. Stills cannot prove exact easing, a true 3D camera, frame-exact timing or hidden implementation. Describe apparent behavior; mark uncertain claims. Requested sampling FPS is not model timing precision.
+Treat model output as a hypothesis. Correct it against moving footage; record material disagreements. Stills cannot prove exact easing, a true 3D camera, frame-exact timing or hidden implementation. Describe apparent behavior; mark uncertain claims.
 
 ## Synthesize the study
 
@@ -43,9 +43,9 @@ Extract reusable **relationships**, not the reference's exact palette, decorativ
 
 ## Present it in HTML
 
-Read [report.md](references/report.md). Write reviewed `data/study.json`, then use `scripts/render_report.py` as a working baseline or author a tailored report preserving its evidence contract. The HTML must contain the whole-film analysis **and** selected scene deep dives; do not leave the detailed work only in a Markdown supplement.
+Read [report.md](references/report.md). Write reviewed `data/study.json`, then use `scripts/render_report.py` as a working baseline or author a tailored report preserving its evidence contract. The HTML must contain both the whole-film analysis and the selected scene deep dives.
 
-Use a quiet editorial layout: source video, meaningful chapter names, substantive paragraphs, selected clips, frames, motion timelines and reusable directions. Remove tiny tags, repeated section labels and self-evident instructions such as “Select a chapter to seek the original.” Controls explain themselves through labels and affordances. Keep technical provenance available in one compact expandable area, not scattered over the page. Necessary uncertainty and time bases are substantive information, not clutter.
+Use a quiet editorial layout: source video, meaningful chapter names, substantive paragraphs, selected clips, frames, motion timelines and reusable directions. Remove tiny tags, repeated section labels and self-evident instructions such as “Select a chapter to seek the original.” Controls explain themselves through labels and affordances. Keep technical provenance available in one compact expandable area, not scattered over the page.
 
 Verify files and intervals, open the actual HTML, inspect desktop and narrow layouts, exercise chapter seeking and scene controls, and play the important excerpts. Confirm media seeking works over HTTP byte ranges. Serve only the study directory, never the repository root containing `.env`.
 

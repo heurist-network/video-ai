@@ -1,9 +1,9 @@
 ---
-name: showcase
+name: storyboard
 description: "Create or revise a Video AI HTML storyboard with static style frames and optional motion studies."
 ---
 
-# Showcase storyboard skill
+# Storyboard skill
 
 [The repository workflow](../docs/workflow.md) owns stage transitions and human review.
 Resume from the conversation and existing storyboard; consult the workflow when deciding
@@ -27,18 +27,13 @@ node "$SKILL/scripts/board.mjs" check "$PROJECT/storyboard/index.html"
 ```
 
 Check after edits, inspect the browser layout, preserve a revision, and stop at the
-workflow's storyboard handoff. Checks do not establish source truth or human approval.
-A source-backed fact can appear in a simplified graphic; never imply composed behavior
-was recorded from a real product. Dates/provenance belong in surrounding notes unless
-a qualification is essential to the actual message.
+workflow's storyboard handoff. A source-backed fact can appear in a simplified graphic,
+but never imply composed behavior was recorded from a real product.
 
 ## Conditional guides
 
 - Producing the approved board: [HyperFrames guide map](../docs/hyperframes.md).
-- Capturing a real product interaction: [capture](references/capture.md).
-- Explicitly selected Remotion production: [native starter](native/README.md).
+- Capturing a real product interaction: [tools](../tools/README.md).
 - Optional motion recipe examples: [motion patterns](references/motion-patterns.md).
 
-Load these only for the corresponding task. A storyboard request does not need render,
-media-sourcing or publishing instructions. Renderer implementation may derive a plan
-from the HTML board when its tools require one; the board remains the creative source.
+Load these only for the corresponding task.

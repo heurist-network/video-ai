@@ -11,7 +11,8 @@ Agents start with [AGENTS.md](AGENTS.md). Humans and agents can follow the
 | --- | --- |
 | `reference-lab/` | Shared Gemini analysis, searchable cards and human gallery |
 | `clips/<name>/` | One project: storyboard, implementation and exports |
-| `showcase/` | Reusable storyboard skill, templates and review helpers |
+| `storyboard/` | Reusable storyboard skill, templates and checker |
+| `tools/` | Product capture, take cutting and MP4 verification |
 | `docs/` | Workflow, folder ownership and lessons from the pilot |
 
 Completed clips, sample projects, generated galleries, bundled media, dependencies, and credentials are excluded from the source tree. Supply local media as needed by the workflows.
